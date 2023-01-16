@@ -15,4 +15,14 @@ const fetchTopics = () => {
   return db.query(queryStr);
 };
 
-module.exports = { fetchTopics };
+const fetchArticles = () => {
+  const queryStr = format(
+    `
+    SELECT * 
+    FROM articles
+    ORDER BY created_at DESC;`
+  );
+  return db.query(queryStr);
+};
+
+module.exports = { fetchTopics, fetchArticles };
