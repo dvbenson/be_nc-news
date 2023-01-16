@@ -29,5 +29,9 @@ describe("GET", () => {
         });
     });
   });
-  //next test
+  describe("Error Handling", () => {
+    test("404: not a route", () => {
+      return request(app).get("/api/tropics").expect(404);
+    });
+  });
 });
