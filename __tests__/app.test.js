@@ -51,7 +51,7 @@ describe("APP", () => {
           });
         });
     });
-    test("200: query adds a comment_count, showing all comments linked to the article_id", () => {
+    test("200: query adds a comment_count, showing all comments linked to article_id", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
