@@ -22,4 +22,5 @@ const getArticles = (request, response, next) => {
     });
 };
 
+const getArticleComments = (request, response, next) => {};
 module.exports = { getTopics, getArticles };

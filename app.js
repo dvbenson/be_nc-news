@@ -1,10 +1,16 @@
-const { getTopics, getArticles } = require("./controllers/controller.js");
+const {
+  getTopics,
+  getArticles,
+  getArticleComments,
+} = require("./controllers/controller.js");
 const express = require("express");
 const app = express();
 const db = require("./db/connection");
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
+
+//app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.use((error, request, response, next) => {
   if (error.status) {
