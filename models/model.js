@@ -30,4 +30,17 @@ const fetchArticles = () => {
   return db.query(queryStr);
 };
 
-module.exports = { fetchTopics, fetchArticles };
+const fetchArticleComments = (article_id) => {
+  const queryStr = format(`
+  SELECT *
+  FROM comments
+  WHERE article_id = $1
+  ORDER BY created_at DESC
+  `);
+
+  return db.query(queryStr, [article_id]).then((rows) => {
+    return rows;
+  });
+};
+
+module.exports = { fetchTopics, fetchArticles, fetchArticleComments };

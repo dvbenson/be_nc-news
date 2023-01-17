@@ -10,7 +10,7 @@ const db = require("./db/connection");
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 
-//app.get("/api/articles/:article_id/comments", getArticleComments);
+app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.use((error, request, response, next) => {
   if (error.status) {

@@ -79,7 +79,7 @@ describe("APP", () => {
           );
         });
     });
-    // test("200: received array of comments for the given aricle_id", () => {
+    // test("200: received array of comments for the given article_id", () => {
     //   return request(app)
     //     .get("/api/articles/1/comments")
     //     .expect(200)
