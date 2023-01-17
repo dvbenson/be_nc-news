@@ -79,6 +79,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(() => {
       const formattedArticleData = articleData.map(convertTimestampToDate);
+      console.log(formattedArticleData[0].created_at);
       const insertArticlesQueryStr = format(
         "INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;",
         formattedArticleData.map(
