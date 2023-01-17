@@ -30,4 +30,19 @@ const fetchArticles = () => {
   return db.query(queryStr);
 };
 
-module.exports = { fetchTopics, fetchArticles };
+const fetchArticleById = (article_id) => {
+  const queryStr = format(`
+       SELECT *
+       FROM articles
+       WHERE article_id = $1;
+  `);
+  return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, msg: "article_id not found" });
+    } else {
+      return rows[0];
+    }
+  });
+};
+
+module.exports = { fetchTopics, fetchArticles, fetchArticleById };
