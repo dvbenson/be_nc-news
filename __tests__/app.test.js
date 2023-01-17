@@ -85,7 +85,7 @@ describe("APP", () => {
 describe("ERRORS", () => {
   describe("Error Handling", () => {
     test("404: not a route", () => {
-      return request(app).get("/api/tropics").expect(404);
+      return request(app).get("/api/this-is-incorrect").expect(404);
     });
   });
 });
