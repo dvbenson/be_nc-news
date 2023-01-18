@@ -13,10 +13,16 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.use((error, request, response, next) => {
-  if (error.status) {
+  if (error.status && error.msg) {
     response.status(error.status).send({ msg: error.msg });
   } else {
     next(error);
+  }
+});
+
+app.use((error, request, response, next) => {
+  if (error.code === "22P02") {
+    response.status(400).send({ msg: "Bad Request" });
   }
 });
 

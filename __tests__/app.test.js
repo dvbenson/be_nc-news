@@ -120,10 +120,10 @@ describe("ERRORS", () => {
     });
     // test("400: bad request, incorrect input clientside", () => {
     //   return request(app)
-    //     .get("/api/articles/twelve")
+    //     .get("/api/articles/ten")
     //     .expect(400)
     //     .then(({ body }) => {
-    //       expect(body.msg).toBe("Incorrect input, please check search");
+    //       expect(body.msg).toBe("Bad Request");
     //     });
     // });
   });
