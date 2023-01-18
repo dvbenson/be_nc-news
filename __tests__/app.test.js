@@ -112,5 +112,13 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("article_id not found");
         });
     });
+    test("400: bad request: responds with an error when passed a bad article_id", () => {
+      return request(app)
+        .get("/api/articles/ten")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
   });
 });

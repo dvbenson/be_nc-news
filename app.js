@@ -12,7 +12,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.use((error, request, response, next) => {
-  if (error.status) {
+  if (error.status && error.msg) {
     response.status(error.status).send({ msg: error.msg });
   } else {
     next(error);
@@ -20,13 +20,14 @@ app.use((error, request, response, next) => {
 });
 
 app.use((error, request, response, next) => {
-  response.status(404).send({ msg: "Path not found" });
+  if (error.code === "22P02") {
+    response.status(400).send({ msg: "Bad Request" });
+  }
 });
 
 app.use((error, request, response, next) => {
-  console.log(error, "<------ error in internal error handling!");
-
-  response.status(500).send({ msg: "bad code" });
+  console.log(error);
+  response.status(500).send({ msg: "Internal Serve Error" });
 });
 
 module.exports = { app };
