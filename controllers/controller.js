@@ -2,6 +2,7 @@ const {
   fetchTopics,
   fetchArticles,
   fetchArticleById,
+  addNewComment,
 } = require("../models/model.js");
 
 const getTopics = (request, response, next) => {
@@ -35,4 +36,14 @@ const getArticleById = (request, response, next) => {
     .catch(next);
 };
 
-module.exports = { getTopics, getArticles, getArticleById };
+const postComments = (request, response, next) => {
+  const article_id = request.params.article_id;
+  const newCommentData = request.body;
+  addNewComment(article_id, newCommentData)
+    .then((comment) => {
+      response.status(201).send(comment);
+    })
+    .catch(next);
+};
+
+module.exports = { getTopics, getArticles, getArticleById, postComments };

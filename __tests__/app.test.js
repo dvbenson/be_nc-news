@@ -99,23 +99,27 @@ describe("APP", () => {
   });
   // describe("POST: /api/articles/:article_id/comments", () => {
   //   test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
+  //     const data = { username: "BigBob", body: "My comment here!" };
   //     return request(app)
-  //     .post("/api/articles/1/comments")
-  //     .expect(201)
-  //     .then((response) => {
-  //       const comment = response.body;
+  //       .post("/api/articles/1/comments")
+  //       .send(data)
 
-  //       const commentLength = Object.keys(comment).length;
-  //       expect(commentLength).toBe(2);
-  //       expect(comment).toHaveProperty("username", expect.any(String));
-  //       expect(comment).toHaveProperty("body", expect.any(String));
-  //     })
-  //   })
-  // })
+  //       .expect(data.username).toBe(data.username)
+  //       .expect(201);
+  //     // .then((response) => {
+  //     const comment = response.body;
+
+  //     const commentLength = Object.keys(comment).length;
+  //     expect(commentLength).toBe(5);
+  //     expect(comment).toHaveProperty("username", expect.any(String));
+  //     expect(comment).toHaveProperty("body", expect.any(String));
+  //     // });
+  //   });
+  // });
 });
 
 describe("ERRORS", () => {
-  describe("Error Handling", () => {
+  describe("GET", () => {
     test("404: incorrect route", () => {
       return request(app).get("/api/this-is-incorrect").expect(404);
     });
@@ -136,4 +140,24 @@ describe("ERRORS", () => {
         });
     });
   });
+  // describe("POST", () => {
+  //   test("400: bad request: bad body/missing required fields", () => {
+  //     //promise reject if objectkeyslength != 2
+  //     return request(app)
+  //       .post("/api/articles/1/comments")
+  //       .expect(400)
+  //       .then(({ body }) => {
+  //         expect(body.msg).toBe("Missing fields on comment");
+  //       });
+  //   });
+  //   test("400: bad request: properties aren't as required for validation", () => {
+  //     //promise reject if object keys arent username && body
+  //     return request(app)
+  //       .post("/api/articles/1/comments")
+  //       .expect(400)
+  //       .then(({ body }) => {
+  //         expect(body.msg).toBe("Incorrect Information Inputted");
+  //       });
+  //   });
+  // });
 });

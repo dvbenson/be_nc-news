@@ -4,6 +4,7 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index.js");
+const { createRef, formatComments } = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
@@ -45,4 +46,44 @@ const fetchArticleById = (article_id) => {
   });
 };
 
-module.exports = { fetchTopics, fetchArticles, fetchArticleById };
+const addNewComment = (article_id, newCommentData) => {
+  const newComment = {
+    body: body,
+    votes: 0,
+    author: author,
+    article_id: article_id,
+    created_at: 0,
+  };
+  const { body } = newCommentData;
+  const { username: author } = newCommentData;
+  const articleIdLookup = createRef(articleData, "title", "article_id");
+  console.log(articleIdLookup);
+  const formattedCommentData = formatComments(newComment, articleIdLookup);
+  console.log(formattedCommentData);
+
+  const queryStr = format(
+    `INSERT INTO comments (body, author, article_id, votes, created_at) VALUES %L;`,
+    formattedCommentData.map(
+      ({ body, author, article_id, votes = 0, created_at }) => [
+        body,
+        author,
+        article_id,
+        votes,
+        created_at,
+      ]
+    )
+  );
+  return db.query(queryStr);
+};
+// if (!newCommentData.username && !newCommentData.username) {
+//   return Promise.reject({ status: 400, msg: "Missing fields on comment" });
+// } else {
+//   console.log(rows);
+// }
+
+module.exports = {
+  fetchTopics,
+  fetchArticles,
+  fetchArticleById,
+  addNewComment,
+};
