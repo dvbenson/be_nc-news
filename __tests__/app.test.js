@@ -103,17 +103,15 @@ describe("APP", () => {
   //     return request(app)
   //       .post("/api/articles/1/comments")
   //       .send(data)
+  //       .expect(201)
+  //       .then((response) => {
+  //         const comment = response.body;
 
-  //       .expect(data.username).toBe(data.username)
-  //       .expect(201);
-  //     // .then((response) => {
-  //     const comment = response.body;
-
-  //     const commentLength = Object.keys(comment).length;
-  //     expect(commentLength).toBe(5);
-  //     expect(comment).toHaveProperty("username", expect.any(String));
-  //     expect(comment).toHaveProperty("body", expect.any(String));
-  //     // });
+  //         const commentLength = Object.keys(comment).length;
+  //         expect(commentLength).toBe(5);
+  //         expect(comment).toHaveProperty("username", expect.any(String));
+  //         expect(comment).toHaveProperty("body", expect.any(String));
+  //       });
   //   });
   // });
 });

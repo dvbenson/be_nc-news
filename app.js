@@ -4,9 +4,9 @@ const {
   getArticleById,
   postComments,
 } = require("./controllers/controller.js");
+const db = require("./db/connection");
 const express = require("express");
 const app = express();
-const db = require("./db/connection");
 
 app.use(express.json());
 
