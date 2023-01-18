@@ -97,6 +97,21 @@ describe("APP", () => {
         });
     });
   });
+  // describe("POST: /api/articles/:article_id/comments", () => {
+  //   test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
+  //     return request(app)
+  //     .post("/api/articles/1/comments")
+  //     .expect(201)
+  //     .then((response) => {
+  //       const comment = response.body;
+
+  //       const commentLength = Object.keys(comment).length;
+  //       expect(commentLength).toBe(2);
+  //       expect(comment).toHaveProperty("username", expect.any(String));
+  //       expect(comment).toHaveProperty("body", expect.any(String));
+  //     })
+  //   })
+  // })
 });
 
 describe("ERRORS", () => {
