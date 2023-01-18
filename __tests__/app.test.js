@@ -79,39 +79,51 @@ describe("APP", () => {
           );
         });
     });
-    // test("200: received array of comments for the given article_id", () => {
-    //   return request(app)
-    //     .get("/api/articles/1/comments")
-    //     .expect(200)
-    //     .then((response) => {
-    //       const comments = response.body;
+    describe("GET: /api/articles/:article_id/comments", () => {
+      test("200: received array of comments for the given article_id", () => {
+        return request(app)
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then((response) => {
+            const comments = response.body;
 
-    //       comments.forEach((comment) => {
-    //         expect(comment).toHaveProperty("comment_id", expect.any(Number));
-    //         expect(comment).toHaveProperty("votes", expect.any(Number));
-    //         expect(comment).toHaveProperty("created_at", expect.any(String));
-    //         expect(comment).toHaveProperty("author", expect.any(String));
-    //         expect(comment).toHaveProperty("body", expect.any(String));
-    //         expect(comment).toHaveProperty("article_id", expect.any(Number));
-    //       });
-    //       expect(comments[0].created_at).toBe();
-    //       expect(comments[comments.length - 1].created_at).toBe();
-    //     });
-    // });
+            comments.forEach((comment) => {
+              expect(comment).toHaveProperty("comment_id", expect.any(Number));
+              expect(comment).toHaveProperty("votes", expect.any(Number));
+              expect(comment).toHaveProperty("created_at", expect.any(String));
+              expect(comment).toHaveProperty("author", expect.any(String));
+              expect(comment).toHaveProperty("body", expect.any(String));
+              expect(comment).toHaveProperty("article_id", expect.any(Number));
+            });
+            expect(comments[0].created_at).toBe("2020-11-03T21:00:00.000Z");
+            expect(comments[comments.length - 1].created_at).toBe(
+              "2020-01-01T03:08:00.000Z"
+            );
+          });
+      });
+    });
   });
 });
 
 describe("ERRORS", () => {
   describe("Error Handling", () => {
-    test("404: not a route", () => {
+    test("404: incorrect pathway", () => {
       return request(app).get("/api/this-is-incorrect").expect(404);
     });
-    // test("404: no comments found for article_id", () => {
+    test("404: no comments found for article_id", () => {
+      return request(app)
+        .get("/api/articles/4/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("This article has no comments yet");
+        });
+    });
+    // test("400: bad request, incorrect input clientside", () => {
     //   return request(app)
-    //     .get("/api/articles/4/comments")
-    //     .expect(404)
+    //     .get("/api/articles/twelve")
+    //     .expect(400)
     //     .then(({ body }) => {
-    //       expect(body.msg).toBe("This article has no comments");
+    //       expect(body.msg).toBe("Incorrect input, please check search");
     //     });
     // });
   });

@@ -20,3 +20,14 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
+
+exports.checkIdIsNum = (article_id) => {
+  if (typeof article_id === "number") {
+    return article_id;
+  } else {
+    return {
+      status: 400,
+      msg: "Incorrect input, please check search",
+    };
+  }
+};

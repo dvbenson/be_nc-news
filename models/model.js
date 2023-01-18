@@ -38,8 +38,15 @@ const fetchArticleComments = (article_id) => {
   ORDER BY created_at DESC
   `);
 
-  return db.query(queryStr, [article_id]).then((rows) => {
-    return rows;
+  return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "This article has no comments yet",
+      });
+    } else {
+      return rows;
+    }
   });
 };
 

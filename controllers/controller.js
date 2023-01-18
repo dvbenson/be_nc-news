@@ -32,9 +32,6 @@ const getArticleComments = (request, response, next) => {
     .then((results) => {
       response.status(200).send(results);
     })
-    .catch((error) => {
-      console.log(error);
-      next(error);
-    });
+    .catch(next);
 };
 module.exports = { getTopics, getArticles, getArticleComments };
