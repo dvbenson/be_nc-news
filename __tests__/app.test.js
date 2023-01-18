@@ -79,6 +79,28 @@ describe("APP", () => {
           );
         });
     });
+    describe("GET: /api/articles/:article_id", () => {
+      test("200: query sends an article object using the specific article_id", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then((response) => {
+            const article = response.body;
+
+            expect(article).toHaveProperty("author", expect.any(String));
+            expect(article).toHaveProperty("title", expect.any(String));
+            expect(article).toHaveProperty("article_id", expect.any(Number));
+            expect(article).toHaveProperty("body", expect.any(String));
+            expect(article).toHaveProperty("topic", expect.any(String));
+            expect(article).toHaveProperty("created_at", expect.any(String));
+            expect(article).toHaveProperty("votes", expect.any(Number));
+            expect(article).toHaveProperty(
+              "article_img_url",
+              expect.any(String)
+            );
+          });
+      });
+    });
     describe("GET: /api/articles/:article_id/comments", () => {
       test("200: received array of comments for the given article_id", () => {
         return request(app)
@@ -110,6 +132,14 @@ describe("ERRORS", () => {
     test("404: incorrect pathway", () => {
       return request(app).get("/api/this-is-incorrect").expect(404);
     });
+    test("404: returns an error for an article_id that doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("article_id not found");
+        });
+    });
     test("404: no comments found for article_id", () => {
       return request(app)
         .get("/api/articles/4/comments")
@@ -118,13 +148,13 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("This article has no comments yet");
         });
     });
-    // test("400: bad request, incorrect input clientside", () => {
-    //   return request(app)
-    //     .get("/api/articles/ten")
-    //     .expect(400)
-    //     .then(({ body }) => {
-    //       expect(body.msg).toBe("Bad Request");
-    //     });
-    // });
+    test("400: bad request, incorrect input clientside", () => {
+      return request(app)
+        .get("/api/articles/ten")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
   });
 });

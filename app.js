@@ -2,6 +2,7 @@ const {
   getTopics,
   getArticles,
   getArticleComments,
+  getArticleById,
 } = require("./controllers/controller.js");
 const express = require("express");
 const app = express();
@@ -9,7 +10,7 @@ const db = require("./db/connection");
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
-
+app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.use((error, request, response, next) => {
