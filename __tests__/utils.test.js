@@ -102,3 +102,33 @@ describe("formatComments", () => {
     expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
   });
 });
+
+// describe("checkRequestBody", () => {
+//   test("returns an object when validated", () => {
+
+//   });
+//   test("returns the requestBody when it meets validation criteria", () => {
+
+//   });
+//   test("rejects requestBody if it doesn't meet validation criteria", () => {
+
+//   })
+// })
+
+// describe("checkVotes", () => {
+//   test("returns an object when validated", () => {
+
+//   });
+//   test("returns the votes object when it meets validation criteria", () => {
+
+//   });
+//   test("rejects the votes object if it doesn't have the inc_votes property", () => {
+
+//   });
+//   test("rejects the votes object if it doesn't have the a number for a value", () => {
+
+//   });
+//   test("rejects the votes object if it doesn't have the correct amount of properties", () => {
+
+//   })
+// })

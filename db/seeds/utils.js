@@ -20,3 +20,44 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
+
+exports.checkArticleId = (articleId) => {
+  if (/[^\d]/g.test(articleId)) {
+    return Promise.reject({
+      status: 400,
+      msg: `Invalid Article ID: please try again`,
+    });
+  }
+  return articleId;
+};
+
+exports.checkRequestBody = (requestBody) => {
+  if (!requestBody || requestBody === {}) {
+    return Promise.reject({
+      status: 400,
+      msg: "Request body is empty, try again",
+    });
+  } else {
+    return requestBody;
+  }
+};
+
+exports.checkVotes = (votes) => {
+  if (!votes.inc_votes) {
+    return Promise.reject({
+      status: 400,
+      msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
+    });
+  } else if (!Number.isInteger(votes.inc_votes)) {
+    return Promise.reject({
+      status: 422,
+      msg: "Votes must be an number!",
+    });
+  } else if (Object.keys(votes).length > 1) {
+    return Promise.reject({
+      status: 422,
+      msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
+    });
+  }
+  return votes;
+};

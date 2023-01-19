@@ -45,4 +45,25 @@ const fetchArticleById = (article_id) => {
   });
 };
 
-module.exports = { fetchTopics, fetchArticles, fetchArticleById };
+const updateArticleVotes = (votes) => {
+  return db
+    .query(
+      `
+    UPDATE articles
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *;
+    `,
+      [votes.inc_votes, articleId]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
+
+module.exports = {
+  fetchTopics,
+  fetchArticles,
+  fetchArticleById,
+  updateArticleVotes,
+};
