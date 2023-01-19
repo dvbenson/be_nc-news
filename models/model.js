@@ -15,19 +15,57 @@ const fetchTopics = () => {
   return db.query(queryStr);
 };
 
-const fetchArticles = () => {
-  const queryStr = format(
-    `
-    SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
-    COUNT(comments.article_id) 
-    AS comment_count 
-    FROM articles 
-    LEFT JOIN comments 
-    ON articles.article_id = comments.article_id 
-    GROUP BY articles.article_id
-    ORDER BY created_at DESC;`
-  );
-  return db.query(queryStr);
+const fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
+  const acceptedSortBys = [
+    "title",
+    "author",
+    "body",
+    "created_at",
+    "aricle_img_url",
+  ];
+  const queryValues = [topic];
+
+  if (topic) {
+    let queryStr = `
+      SELECT articles.$1
+      COUNT(comments.article_id) 
+      AS comment_count 
+      FROM articles 
+      LEFT JOIN comments 
+      ON articles.article_id = comments.article_id 
+      GROUP BY articles.article_id
+  
+      `;
+    queryStr += `ORDER BY ${sort_by} ${order.toUpperCase()};`;
+
+    if (!acceptedSortBys.includes(sort_by)) {
+      return Promise.reject({
+        status: 400,
+        msg: "That sort category does not exist!",
+      });
+    }
+    return db.query(queryStr, queryValues);
+  } else {
+    let queryStr = `
+      SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
+      COUNT(comments.article_id) 
+      AS comment_count 
+      FROM articles 
+      LEFT JOIN comments 
+      ON articles.article_id = comments.article_id 
+      GROUP BY articles.article_id
+  
+      `;
+    queryStr += `ORDER BY ${sort_by} ${order.toUpperCase()};`;
+
+    if (!acceptedSortBys.includes(sort_by)) {
+      return Promise.reject({
+        status: 400,
+        msg: "That sort category does not exist!",
+      });
+    }
+    return db.query(queryStr, queryValues);
+  }
 };
 
 const fetchArticleById = (article_id) => {
@@ -46,3 +84,14 @@ const fetchArticleById = (article_id) => {
 };
 
 module.exports = { fetchTopics, fetchArticles, fetchArticleById };
+
+// `
+//     SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url,
+//     COUNT(comments.article_id)
+//     AS comment_count
+//     FROM articles
+//     LEFT JOIN comments
+//     ON articles.article_id = comments.article_id
+//     GROUP BY articles.article_id
+//     ORDER BY created_at DESC;`
+//comment_count query ^^^

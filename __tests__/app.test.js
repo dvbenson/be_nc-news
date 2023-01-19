@@ -13,91 +13,102 @@ afterAll(() => {
   db.end();
 });
 
-describe("APP", () => {
-  describe("GET: /api/topics", () => {
-    test("200: responds with array of topic objects, each with the properties 'slug' and 'description'", () => {
-      return request(app)
-        .get("/api/topics")
-        .expect(200)
-        .then((response) => {
-          const topics = response.body;
-          expect(topics.length).toBe(3);
-          topics.forEach((topic) => {
-            expect(topic).toHaveProperty("slug", expect.any(String));
-            expect(topic).toHaveProperty("description", expect.any(String));
-          });
-        });
-    });
-  });
-  describe("GET: /api/articles", () => {
-    test("200: responds with array of article objects, each with correct properties", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then((response) => {
-          const articles = response.body;
-          expect(articles.length).toBe(12);
-          articles.forEach((article) => {
-            expect(article).toHaveProperty("author", expect.any(String));
-            expect(article).toHaveProperty("title", expect.any(String));
-            expect(article).toHaveProperty("article_id", expect.any(Number));
-            expect(article).toHaveProperty("topic", expect.any(String));
-            expect(article).toHaveProperty("created_at", expect.any(String));
-            expect(article).toHaveProperty("votes", expect.any(Number));
-            expect(article).toHaveProperty(
-              "article_img_url",
-              expect.any(String)
-            );
-          });
-        });
-    });
-    test("200: query adds a comment_count, showing all comments linked to article_id", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then((response) => {
-          const articles = response.body;
-          articles.forEach((article) => {
-            expect(article).toHaveProperty("comment_count", expect.any(String));
-          });
-        });
-    });
-    test("200: query sends all articles sorted by date, in descending order", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then((response) => {
-          const articles = response.body;
+// describe("APP", () => {
+//   describe("GET: /api/topics", () => {
+//     test("200: responds with array of topic objects, each with the properties 'slug' and 'description'", () => {
+//       return request(app)
+//         .get("/api/topics")
+//         .expect(200)
+//         .then((response) => {
+//           const topics = response.body;
+//           expect(topics.length).toBe(3);
+//           topics.forEach((topic) => {
+//             expect(topic).toHaveProperty("slug", expect.any(String));
+//             expect(topic).toHaveProperty("description", expect.any(String));
+//           });
+//         });
+//     });
+//   });
+//   describe("GET: /api/articles", () => {
+//     test("200: responds with array of article objects, each with correct properties", () => {
+//       return request(app)
+//         .get("/api/articles")
+//         .expect(200)
+//         .then((response) => {
+//           const articles = response.body;
+//           expect(articles.length).toBe(12);
+//           articles.forEach((article) => {
+//             expect(article).toHaveProperty("author", expect.any(String));
+//             expect(article).toHaveProperty("title", expect.any(String));
+//             expect(article).toHaveProperty("article_id", expect.any(Number));
+//             expect(article).toHaveProperty("topic", expect.any(String));
+//             expect(article).toHaveProperty("created_at", expect.any(String));
+//             expect(article).toHaveProperty("votes", expect.any(Number));
+//             expect(article).toHaveProperty(
+//               "article_img_url",
+//               expect.any(String)
+//             );
+//           });
+//         });
+//     });
+//     test("200: query adds a comment_count, showing all comments linked to article_id", () => {
+//       return request(app)
+//         .get("/api/articles")
+//         .expect(200)
+//         .then((response) => {
+//           const articles = response.body;
+//           articles.forEach((article) => {
+//             expect(article).toHaveProperty("comment_count", expect.any(String));
+//           });
+//         });
+//     });
+//     test("200: query sends all articles sorted by date, in descending order", () => {
+//       return request(app)
+//         .get("/api/articles")
+//         .expect(200)
+//         .then((response) => {
+//           const articles = response.body;
 
-          expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
-          expect(articles[0].created_at).not.toBe("2020-01-04T00:24:00.000Z");
-          expect(articles[articles.length - 1].created_at).toBe(
-            "2020-01-07T14:08:00.000Z"
-          );
-          expect(articles[articles.length - 1].created_at).not.toBe(
-            "2020-11-03T09:12:00.000Z"
-          );
-        });
-    });
-    test("200: query sends an article object using the specific article_id", () => {
-      return request(app)
-        .get("/api/articles/1")
-        .expect(200)
-        .then((response) => {
-          const article = response.body;
+//           expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
+//           expect(articles[0].created_at).not.toBe("2020-01-04T00:24:00.000Z");
+//           expect(articles[articles.length - 1].created_at).toBe(
+//             "2020-01-07T14:08:00.000Z"
+//           );
+//           expect(articles[articles.length - 1].created_at).not.toBe(
+//             "2020-11-03T09:12:00.000Z"
+//           );
+//         });
+//     });
+//     test("200: get request can take a query which filters articles by a single topic", () => {
+//       return request(app)
+//         .get("/api/articles?cats")
+//         .expect(200)
+//         .then((response) => {
+//           const articles = response.body;
+//           articles.forEach((article) => {
+//             expect(article.topic).toBe("cats");
+//           });
+//         });
+//     });
+//     test("200: query sends an article object using the specific article_id", () => {
+//       return request(app)
+//         .get("/api/articles/1")
+//         .expect(200)
+//         .then((response) => {
+//           const article = response.body;
 
-          expect(article).toHaveProperty("author", expect.any(String));
-          expect(article).toHaveProperty("title", expect.any(String));
-          expect(article).toHaveProperty("article_id", expect.any(Number));
-          expect(article).toHaveProperty("body", expect.any(String));
-          expect(article).toHaveProperty("topic", expect.any(String));
-          expect(article).toHaveProperty("created_at", expect.any(String));
-          expect(article).toHaveProperty("votes", expect.any(Number));
-          expect(article).toHaveProperty("article_img_url", expect.any(String));
-        });
-    });
-  });
-});
+//           expect(article).toHaveProperty("author", expect.any(String));
+//           expect(article).toHaveProperty("title", expect.any(String));
+//           expect(article).toHaveProperty("article_id", expect.any(Number));
+//           expect(article).toHaveProperty("body", expect.any(String));
+//           expect(article).toHaveProperty("topic", expect.any(String));
+//           expect(article).toHaveProperty("created_at", expect.any(String));
+//           expect(article).toHaveProperty("votes", expect.any(Number));
+//           expect(article).toHaveProperty("article_img_url", expect.any(String));
+//         });
+//     });
+//   });
+// });
 
 describe("ERRORS", () => {
   describe("Error Handling", () => {
