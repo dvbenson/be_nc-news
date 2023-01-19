@@ -1,5 +1,5 @@
 const request = require("supertest");
-const { app } = require("../app.js");
+const app = require("../app.js");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
@@ -97,40 +97,40 @@ describe("APP", () => {
         });
     });
   });
-  // describe("PATCH: api/articles/:article_id", () => {
-  //   test("200: request accepts an object that modifies the vote property in the database positively", () => {
-  //     const testId = 2;
-  //     const testVote = { inc_votes: 2 };
-  //     return request(app)
-  //       .patch(`/api/articles/${testId}`)
-  //       .send(testVote)
-  //       .expect(200)
-  //       .then((response) => {
-  //         expect(response.body).toBeInstanceOf(Object);
-  //         expect(response.body.articleID).toBe(2);
-  //         expect(response.body.updatedArticleInfo.votes).toBe(2);
-  //         expect(response.body.updatedArticleInfo).not.toBe(
-  //           testData.articleData[articleID - 1]
-  //         );
-  //       });
-  //   });
-  //   test("200: request accepts an object that modifies the vote property in the database negatively", () => {
-  //     const testId = 1;
-  //     const testVote = { inc_votes: -50 };
-  //     return request(app)
-  //       .patch(`/api/articles/${testId}`)
-  //       .send(testVote)
-  //       .expect(200)
-  //       .then((response) => {
-  //         expect(response.body).toBeInstanceOf(Object);
-  //         expect(response.body.articleID).toBe(1);
-  //         expect(response.body.updatedArticleInfo.votes).toBe(-50);
-  //         expect(response.body.updatedArticleInfo).not.toBe(
-  //           testData.articleData[articleID - 1]
-  //         );
-  //       });
-  //   });
-  // });
+  describe("PATCH: api/articles/:article_id", () => {
+    test("200: request accepts an object that modifies the vote property in the database positively", () => {
+      const articleId = 2;
+      const votes = { inc_votes: 2 };
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send(votes)
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toBeInstanceOf(Object);
+          expect(response.body.article_id).toBe(2);
+          expect(response.body.votes).toBe(2);
+          expect(response.body.updatedArticleInfo).not.toBe(
+            testData.articleData[articleId - 1]
+          );
+        });
+    });
+    test("200: request accepts an object that modifies the vote property in the database negatively", () => {
+      const articleId = 1;
+      const votes = { inc_votes: -50 };
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send(votes)
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toBeInstanceOf(Object);
+          expect(response.body.article_id).toBe(1);
+          expect(response.body.votes).toBe(50);
+          expect(response.body.updatedArticleInfo).not.toBe(
+            testData.articleData[articleId - 1]
+          );
+        });
+    });
+  });
 
   describe("ERRORS", () => {
     describe("Error Handling", () => {
@@ -153,37 +153,37 @@ describe("APP", () => {
             expect(body.msg).toBe("Bad Request");
           });
       });
-      // test("400: throws an error if request body does not have inc_votes property", () => {
-      //   const articleId = 2;
-      //   const newVote = { votes: 2 };
-      //   return request(app)
-      //     .patch(`/api/articles/${articleId}`)
-      //     .send(newVote)
-      //     .expect(400);
-      // });
-      // test("400: throws an error if request body is empty", () => {
-      //   const articleId = 2;
-      //   return request(app)
-      //     .patch(`/api/articles/${articleId}`)
-      //     .send()
-      //     .expect(400);
-      // });
-      // test("422: throws an error if the value of inc_votes is invalid", () => {
-      //   const articleId = 2;
-      //   const newVote = { inc_votes: "string" };
-      //   return request(app)
-      //     .patch(`/api/articles/${articleId}`)
-      //     .send(newVote)
-      //     .expect(422);
-      // });
-      // test("422: throws an error if there is another property in the request body", () => {
-      //   const articleId = 2;
-      //   const newVote = { inc_votes: 2, name: "Doggo" };
-      //   return request(app)
-      //     .patch(`/api/articles/${articleId}`)
-      //     .send(newVote)
-      //     .expect(422);
-      // });
+      test("400: throws an error if request body does not have inc_votes property", () => {
+        const articleId = 2;
+        const newVote = { votes: 2 };
+        return request(app)
+          .patch(`/api/articles/${articleId}`)
+          .send(newVote)
+          .expect(400);
+      });
+      test("400: throws an error if request body is empty", () => {
+        const articleId = 2;
+        return request(app)
+          .patch(`/api/articles/${articleId}`)
+          .send()
+          .expect(400);
+      });
+      test("422: throws an error if the value of inc_votes is invalid", () => {
+        const articleId = 2;
+        const newVote = { inc_votes: "string" };
+        return request(app)
+          .patch(`/api/articles/${articleId}`)
+          .send(newVote)
+          .expect(422);
+      });
+      test("422: throws an error if there is another property in the request body", () => {
+        const articleId = 2;
+        const newVote = { inc_votes: 2, name: "Doggo" };
+        return request(app)
+          .patch(`/api/articles/${articleId}`)
+          .send(newVote)
+          .expect(422);
+      });
     });
   });
 });

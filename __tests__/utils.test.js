@@ -2,6 +2,7 @@ const {
   convertTimestampToDate,
   createRef,
   formatComments,
+  checkVotes,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -103,32 +104,38 @@ describe("formatComments", () => {
   });
 });
 
-// describe("checkRequestBody", () => {
-//   test("returns an object when validated", () => {
+describe("checkVotes", () => {
+  test("returns an object when validated", () => {
+    const testVote = { inc_votes: 5 };
 
-//   });
-//   test("returns the requestBody when it meets validation criteria", () => {
+    expect(typeof checkVotes(testVote)).toEqual("object");
+  });
+  test("returns the votes object when it meets validation criteria", () => {
+    const testVote = { inc_votes: 5 };
 
-//   });
-//   test("rejects requestBody if it doesn't meet validation criteria", () => {
+    expect(checkVotes(testVote)).toEqual({ inc_votes: 5 });
+  });
+  test("rejects the votes object if it doesn't have the inc_votes property", () => {
+    const testVote = { lots_of_votes: 1234 };
 
-//   })
-// })
+    expect(checkVotes(testVote)).rejects.toEqual({
+      status: 400,
+      msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
+    });
+  });
+  test("rejects the votes object if it doesn't have the a number for a value", () => {
+    const testVote = { inc_votes: "String" };
 
-// describe("checkVotes", () => {
-//   test("returns an object when validated", () => {
-
-//   });
-//   test("returns the votes object when it meets validation criteria", () => {
-
-//   });
-//   test("rejects the votes object if it doesn't have the inc_votes property", () => {
-
-//   });
-//   test("rejects the votes object if it doesn't have the a number for a value", () => {
-
-//   });
-//   test("rejects the votes object if it doesn't have the correct amount of properties", () => {
-
-//   })
-// })
+    expect(checkVotes(testVote)).rejects.toEqual({
+      status: 422,
+      msg: "Votes must be an number!",
+    });
+  });
+  test("rejects the votes object if it doesn't have the correct amount of properties", () => {
+    const testVote = { inc_votes: 54, emoji: "smiley face" };
+    expect(checkVotes(testVote)).rejects.toEqual({
+      status: 422,
+      msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
+    });
+  });
+});

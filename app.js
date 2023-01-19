@@ -8,6 +8,8 @@ const express = require("express");
 const app = express();
 const db = require("./db/connection");
 
+app.use(express.json());
+
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
@@ -35,4 +37,4 @@ app.use((error, request, response, next) => {
   response.status(500).send({ msg: "Internal Server Error" });
 });
 
-module.exports = { app };
+module.exports = app;

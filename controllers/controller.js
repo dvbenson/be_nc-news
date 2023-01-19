@@ -2,12 +2,9 @@ const {
   fetchTopics,
   fetchArticles,
   fetchArticleById,
+  updateArticleVotes,
 } = require("../models/model.js");
-const {
-  checkArticleId,
-  checkRequestBody,
-  checkVotes,
-} = require("../db/seeds/utils.js");
+const { checkArticleId, checkVotes } = require("../db/seeds/utils.js");
 
 const getTopics = (request, response, next) => {
   fetchTopics()
@@ -41,13 +38,10 @@ const getArticleById = (request, response, next) => {
 };
 
 const patchArticleVotes = (request, response, next) => {
-  const { articleId } = request.params;
+  const { article_id: articleId } = request.params;
   const votes = request.body;
-  return Promise.all([
-    checkArticleId(articleId),
-    checkRequestBody(votes),
-    checkVotes(votes),
-  ])
+
+  return Promise.all([checkArticleId(articleId), checkVotes(votes)])
     .then((checkedVotes) => {
       return updateArticleVotes(checkedVotes[0], checkedVotes[1]);
     })

@@ -31,17 +31,6 @@ exports.checkArticleId = (articleId) => {
   return articleId;
 };
 
-exports.checkRequestBody = (requestBody) => {
-  if (!requestBody || requestBody === {}) {
-    return Promise.reject({
-      status: 400,
-      msg: "Request body is empty, try again",
-    });
-  } else {
-    return requestBody;
-  }
-};
-
 exports.checkVotes = (votes) => {
   if (!votes.inc_votes) {
     return Promise.reject({

@@ -45,20 +45,36 @@ const fetchArticleById = (article_id) => {
   });
 };
 
-const updateArticleVotes = (votes) => {
-  return db
-    .query(
-      `
+const updateArticleVotes = (articleId, votes) => {
+  if (votes.inc_votes < 0) {
+    let newVoteNum = Math.abs(votes.inc_votes);
+    return db
+      .query(
+        `
+    UPDATE articles
+    SET votes = votes - $1
+    WHERE article_id = $2
+    RETURNING *;`,
+        [newVoteNum, articleId]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  } else if (votes.inc_votes > 0) {
+    return db
+      .query(
+        `
     UPDATE articles
     SET votes = votes + $1
     WHERE article_id = $2
     RETURNING *;
     `,
-      [votes.inc_votes, articleId]
-    )
-    .then((result) => {
-      return result.rows[0];
-    });
+        [votes.inc_votes, articleId]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  }
 };
 
 module.exports = {
