@@ -1,5 +1,5 @@
 const request = require("supertest");
-const { app } = require("../app.js");
+const app = require("../app.js");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
@@ -99,63 +99,67 @@ describe("APP", () => {
   });
   // describe("POST: /api/articles/:article_id/comments", () => {
   //   test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
-  //     const data = { username: "BigBob", body: "My comment here!" };
+  //     const articleID = 2;
+  //     const newComment = { username: "bob", body: "im bob" };
   //     return request(app)
-  //       .post("/api/articles/1/comments")
-  //       .send(data)
+  //       .post(`/api/articles/${articleID}/comments`)
+  //       .send(newComment)
   //       .expect(201)
   //       .then((response) => {
-  //         const comment = response.body;
-
-  //         const commentLength = Object.keys(comment).length;
-  //         expect(commentLength).toBe(5);
-  //         expect(comment).toHaveProperty("username", expect.any(String));
-  //         expect(comment).toHaveProperty("body", expect.any(String));
+  //         console.log(response.body);
+  //         expect(response.body.comment).toBeInstanceOf(Object);
+  //         expect(response.body.comment).toMatchObject({
+  //           body: newComment.body,
+  //           votes: 0,
+  //           author: newComment.username,
+  //           article_id: articleID,
+  //           created_at: expect.any(String),
+  //         });
   //       });
   //   });
   // });
-});
 
-describe("ERRORS", () => {
-  describe("GET", () => {
-    test("404: incorrect route", () => {
-      return request(app).get("/api/this-is-incorrect").expect(404);
+  describe("ERRORS", () => {
+    describe("GET", () => {
+      test("404: incorrect route", () => {
+        return request(app).get("/api/this-is-incorrect").expect(404);
+      });
+      test("404: returns an error for a article_id that doesn't exist", () => {
+        return request(app)
+          .get("/api/articles/1000")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("article_id not found");
+          });
+      });
+      test("400: bad request: responds with an error when passed a bad article_id", () => {
+        return request(app)
+          .get("/api/articles/ten")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
+          });
+      });
     });
-    test("404: returns an error for a article_id that doesn't exist", () => {
-      return request(app)
-        .get("/api/articles/1000")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("article_id not found");
-        });
-    });
-    test("400: bad request: responds with an error when passed a bad article_id", () => {
-      return request(app)
-        .get("/api/articles/ten")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Bad Request");
-        });
-    });
+    // describe("POST", () => {
+    //   test("400: bad request: bad body/missing required fields", () => {
+    //     //promise reject if objectkeyslength != 2
+    //     return request(app)
+    //       .post("/api/articles/1/comments")
+    //       .expect(400)
+    //       .then(({ body }) => {
+    //         expect(body.msg).toBe("Missing fields on comment");
+    //       });
+    //   });
+    //   test("400: bad request: properties aren't as required for validation", () => {
+    //     //promise reject if object keys arent username && body
+    //     return request(app)
+    //       .post("/api/articles/1/comments")
+    //       .expect(400)
+    //       .then(({ body }) => {
+    //         expect(body.msg).toBe("Incorrect Information Inputted");
+    //       });
+    //   });
+    // });
   });
-  // describe("POST", () => {
-  //   test("400: bad request: bad body/missing required fields", () => {
-  //     //promise reject if objectkeyslength != 2
-  //     return request(app)
-  //       .post("/api/articles/1/comments")
-  //       .expect(400)
-  //       .then(({ body }) => {
-  //         expect(body.msg).toBe("Missing fields on comment");
-  //       });
-  //   });
-  //   test("400: bad request: properties aren't as required for validation", () => {
-  //     //promise reject if object keys arent username && body
-  //     return request(app)
-  //       .post("/api/articles/1/comments")
-  //       .expect(400)
-  //       .then(({ body }) => {
-  //         expect(body.msg).toBe("Incorrect Information Inputted");
-  //       });
-  //   });
-  // });
 });

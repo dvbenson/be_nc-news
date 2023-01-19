@@ -46,40 +46,66 @@ const fetchArticleById = (article_id) => {
   });
 };
 
-const addNewComment = (article_id, newCommentData) => {
-  const newComment = {
-    body: body,
-    votes: 0,
-    author: author,
-    article_id: article_id,
-    created_at: 0,
-  };
-  const { body } = newCommentData;
-  const { username: author } = newCommentData;
-  const articleIdLookup = createRef(articleData, "title", "article_id");
-  console.log(articleIdLookup);
-  const formattedCommentData = formatComments(newComment, articleIdLookup);
-  console.log(formattedCommentData);
-
-  const queryStr = format(
-    `INSERT INTO comments (body, author, article_id, votes, created_at) VALUES %L;`,
-    formattedCommentData.map(
-      ({ body, author, article_id, votes = 0, created_at }) => [
-        body,
-        author,
-        article_id,
-        votes,
-        created_at,
-      ]
-    )
+const addNewComment = (article_id, newComment) => {
+  return Promise.all([article_id, newComment]).then(
+    ([article_id, newComment]) => {
+      const articleIdLookup = createRef(articleData, "title", "article_id");
+      const formattedCommentData = formatComments(newComment, articleIdLookup);
+      return db
+        .query(
+          `INSERT INTO comments (body, author, article_id, votes, created_at) VALUES %L RETURNING*;`,
+          formattedCommentData.map(
+            ({ body, author, article_id, votes = 0, created_at }) => [
+              body,
+              author,
+              article_id,
+              votes,
+              created_at,
+            ]
+          )
+        )
+        .then(() => {
+          return db.query(
+            `
+        SELECT * FROM comments
+     WHERE comments.author = $1
+    AND comments.article_id = $2
+    AND comments.body = $3;`,
+            [newComment.username, article_id, newComment.body]
+          );
+        })
+        .then((results) => {
+          return results.rows[0];
+        });
+    }
   );
-  return db.query(queryStr);
 };
-// if (!newCommentData.username && !newCommentData.username) {
-//   return Promise.reject({ status: 400, msg: "Missing fields on comment" });
-// } else {
-//   console.log(rows);
-// }
+
+// const addNewComment = (article_id, newComment) => {
+//   return db
+//     .query(
+//       `
+//   INSERT INTO comments
+//   (author, article_id, body)
+//   VALUES
+//   ($1, $2, $3);`,
+//       [newComment.username, article_id, newComment.body]
+//     )
+//     .then(() => {
+//       return db
+//         .query(
+//           `
+//     SELECT * FROM comments
+//     WHERE comments.author = $1
+//     AND comments.article_id = $2
+//     AND comments.body = $3;`,
+//           [newComment.username, article_id, newComment.body]
+//         )
+//         .then((results) => {
+//           return results.rows[0];
+//         });
+//     });
+// };
 
 module.exports = {
   fetchTopics,

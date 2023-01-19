@@ -29,6 +29,7 @@ const getArticles = (request, response, next) => {
 
 const getArticleById = (request, response, next) => {
   const { article_id } = request.params;
+
   fetchArticleById(article_id)
     .then((article) => {
       response.status(200).send(article);
@@ -37,13 +38,15 @@ const getArticleById = (request, response, next) => {
 };
 
 const postComments = (request, response, next) => {
-  const article_id = request.params.article_id;
-  const newCommentData = request.body;
-  addNewComment(article_id, newCommentData)
-    .then((comment) => {
-      response.status(201).send(comment);
+  const { article_id } = request.params;
+  const newComment = request.body;
+  Promise.all([addNewComment(article_id, newComment)])
+    .then((postComment) => {
+      response.status(201).send(postComment);
     })
-    .catch(next);
+    .catch((error) => {
+      next(error);
+    });
 };
 
 module.exports = { getTopics, getArticles, getArticleById, postComments };
