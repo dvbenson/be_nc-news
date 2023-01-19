@@ -45,4 +45,29 @@ const fetchArticleById = (article_id) => {
   });
 };
 
-module.exports = { fetchTopics, fetchArticles, fetchArticleById };
+const fetchArticleComments = (article_id) => {
+  const queryStr = format(`
+  SELECT *
+  FROM comments
+  WHERE article_id = $1
+  ORDER BY created_at DESC
+  `);
+
+  return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "This article has no comments yet",
+      });
+    } else {
+      return rows;
+    }
+  });
+};
+
+module.exports = {
+  fetchTopics,
+  fetchArticles,
+  fetchArticleComments,
+  fetchArticleById,
+};

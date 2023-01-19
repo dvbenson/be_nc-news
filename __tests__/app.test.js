@@ -79,46 +79,102 @@ describe("APP", () => {
           );
         });
     });
-    test("200: query sends an article object using the specific article_id", () => {
-      return request(app)
-        .get("/api/articles/1")
-        .expect(200)
-        .then((response) => {
-          const article = response.body;
+    describe("GET: /api/articles/:article_id", () => {
+      test("200: query sends an article object using the specific article_id", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then((response) => {
+            const article = response.body;
 
-          expect(article).toHaveProperty("author", expect.any(String));
-          expect(article).toHaveProperty("title", expect.any(String));
-          expect(article).toHaveProperty("article_id", expect.any(Number));
-          expect(article).toHaveProperty("body", expect.any(String));
-          expect(article).toHaveProperty("topic", expect.any(String));
-          expect(article).toHaveProperty("created_at", expect.any(String));
-          expect(article).toHaveProperty("votes", expect.any(Number));
-          expect(article).toHaveProperty("article_img_url", expect.any(String));
-        });
+            expect(article).toHaveProperty("author", expect.any(String));
+            expect(article).toHaveProperty("title", expect.any(String));
+            expect(article).toHaveProperty("article_id", expect.any(Number));
+            expect(article).toHaveProperty("body", expect.any(String));
+            expect(article).toHaveProperty("topic", expect.any(String));
+            expect(article).toHaveProperty("created_at", expect.any(String));
+            expect(article).toHaveProperty("votes", expect.any(Number));
+            expect(article).toHaveProperty(
+              "article_img_url",
+              expect.any(String)
+            );
+          });
+      });
+    });
+    describe("GET: /api/articles/:article_id/comments", () => {
+      test("200: received array of comments for the given article_id", () => {
+        return request(app)
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then((response) => {
+            const comments = response.body;
+
+            comments.forEach((comment) => {
+              expect(comment).toHaveProperty("comment_id", expect.any(Number));
+              expect(comment).toHaveProperty("votes", expect.any(Number));
+              expect(comment).toHaveProperty("created_at", expect.any(String));
+              expect(comment).toHaveProperty("author", expect.any(String));
+              expect(comment).toHaveProperty("body", expect.any(String));
+              expect(comment).toHaveProperty("article_id", expect.any(Number));
+            });
+            expect(comments[0].created_at).toBe("2020-11-03T21:00:00.000Z");
+            expect(comments[comments.length - 1].created_at).toBe(
+              "2020-01-01T03:08:00.000Z"
+            );
+          });
+      });
+      test("200: query sends an article object using the specific article_id", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then((response) => {
+            const article = response.body;
+
+            expect(article).toHaveProperty("author", expect.any(String));
+            expect(article).toHaveProperty("title", expect.any(String));
+            expect(article).toHaveProperty("article_id", expect.any(Number));
+            expect(article).toHaveProperty("body", expect.any(String));
+            expect(article).toHaveProperty("topic", expect.any(String));
+            expect(article).toHaveProperty("created_at", expect.any(String));
+            expect(article).toHaveProperty("votes", expect.any(Number));
+            expect(article).toHaveProperty(
+              "article_img_url",
+              expect.any(String)
+            );
+          });
+      });
     });
   });
-});
 
-describe("ERRORS", () => {
-  describe("Error Handling", () => {
-    test("404: incorrect route", () => {
-      return request(app).get("/api/this-is-incorrect").expect(404);
-    });
-    test("404: returns an error for a article_id that doesn't exist", () => {
-      return request(app)
-        .get("/api/articles/1000")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("article_id not found");
-        });
-    });
-    test("400: bad request: responds with an error when passed a bad article_id", () => {
-      return request(app)
-        .get("/api/articles/ten")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Bad Request");
-        });
+  describe("ERRORS", () => {
+    describe("Error Handling", () => {
+      test("404: incorrect pathway", () => {
+        return request(app).get("/api/this-is-incorrect").expect(404);
+      });
+      test("404: returns an error for a article_id that doesn't exist", () => {
+        return request(app)
+          .get("/api/articles/1000")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("article_id not found");
+          });
+      });
+      test("404: no comments found for article_id", () => {
+        return request(app)
+          .get("/api/articles/4/comments")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("This article has no comments yet");
+          });
+      });
+      test("400: bad request: responds with an error when passed a bad article_id", () => {
+        return request(app)
+          .get("/api/articles/ten")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request");
+          });
+      });
     });
   });
 });

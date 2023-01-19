@@ -2,6 +2,7 @@ const {
   convertTimestampToDate,
   createRef,
   formatComments,
+  checkIdIsNum,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -100,5 +101,21 @@ describe("formatComments", () => {
     const comments = [{ created_at: timestamp }];
     const formattedComments = formatComments(comments, {});
     expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
+  });
+});
+
+describe("checkIdIsNum", () => {
+  test("returns article_id if it is a number", () => {
+    const testId = 1;
+
+    expect(typeof checkIdIsNum(testId)).toBe("number");
+  });
+  test("returns error message if it is any other data type", () => {
+    const testId = "Barry";
+
+    expect(checkIdIsNum(testId)).toEqual({
+      status: 400,
+      msg: "Incorrect input, please check search",
+    });
   });
 });

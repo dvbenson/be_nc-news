@@ -1,6 +1,7 @@
 const {
   getTopics,
   getArticles,
+  getArticleComments,
   getArticleById,
 } = require("./controllers/controller.js");
 const express = require("express");
@@ -10,6 +11,7 @@ const db = require("./db/connection");
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.use((error, request, response, next) => {
   if (error.status && error.msg) {
@@ -22,6 +24,8 @@ app.use((error, request, response, next) => {
 app.use((error, request, response, next) => {
   if (error.code === "22P02") {
     response.status(400).send({ msg: "Bad Request" });
+  } else {
+    next(error);
   }
 });
 
