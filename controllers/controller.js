@@ -2,6 +2,7 @@ const {
   fetchTopics,
   fetchArticles,
   fetchArticleById,
+  fetchUsers,
 } = require("../models/model.js");
 
 const getTopics = (request, response, next) => {
@@ -35,4 +36,14 @@ const getArticleById = (request, response, next) => {
     .catch(next);
 };
 
-module.exports = { getTopics, getArticles, getArticleById };
+const getUsers = (request, response, next) => {
+  fetchUsers()
+    .then((users) => {
+      response.status(200).send(users.rows);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+module.exports = { getTopics, getArticles, getArticleById, getUsers };

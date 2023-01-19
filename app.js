@@ -2,6 +2,7 @@ const {
   getTopics,
   getArticles,
   getArticleById,
+  getUsers,
 } = require("./controllers/controller.js");
 const express = require("express");
 const app = express();
@@ -10,6 +11,7 @@ const db = require("./db/connection");
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/users", getUsers);
 
 app.use((error, request, response, next) => {
   if (error.status && error.msg) {
