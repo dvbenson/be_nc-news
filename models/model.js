@@ -4,7 +4,7 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index.js");
-const { createRef, formatComments } = require("../db/seeds/utils.js");
+const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
@@ -39,77 +39,32 @@ const fetchArticleById = (article_id) => {
   `);
   return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
     if (rowCount === 0) {
-      return Promise.reject({ status: 404, msg: "article_id not found" });
+      return Promise.reject({ status: 404, msg: "Article ID not found" });
     } else {
       return rows[0];
     }
   });
 };
 
-const addNewComment = (article_id, newComment) => {
-  return Promise.all([article_id, newComment]).then(
-    ([article_id, newComment]) => {
-      const articleIdLookup = createRef(articleData, "title", "article_id");
-      const formattedCommentData = formatComments(newComment, articleIdLookup);
-      return db
-        .query(
-          `INSERT INTO comments (body, author, article_id, votes, created_at) VALUES %L RETURNING*;`,
-          formattedCommentData.map(
-            ({ body, author, article_id, votes = 0, created_at }) => [
-              body,
-              author,
-              article_id,
-              votes,
-              created_at,
-            ]
-          )
-        )
-        .then(() => {
-          return db.query(
-            `
-        SELECT * FROM comments
-     WHERE comments.author = $1
-    AND comments.article_id = $2
-    AND comments.body = $3;`,
-            [newComment.username, article_id, newComment.body]
-          );
-        })
-        .then((results) => {
-          return results.rows[0];
-        });
-    }
-  );
+const addNewComment = (articleId, newComment) => {
+  return db
+    .query(
+      `INSERT INTO comments
+    (author, article_id, body)
+    VALUES ($1, $2, $3)
+    RETURNING *;`,
+      [newComment.username, articleId, newComment.body]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
 };
-
-// const addNewComment = (article_id, newComment) => {
-//   return db
-//     .query(
-//       `
-//   INSERT INTO comments
-//   (author, article_id, body)
-//   VALUES
-//   ($1, $2, $3);`,
-//       [newComment.username, article_id, newComment.body]
-//     )
-//     .then(() => {
-//       return db
-//         .query(
-//           `
-//     SELECT * FROM comments
-//     WHERE comments.author = $1
-//     AND comments.article_id = $2
-//     AND comments.body = $3;`,
-//           [newComment.username, article_id, newComment.body]
-//         )
-//         .then((results) => {
-//           return results.rows[0];
-//         });
-//     });
-// };
 
 module.exports = {
   fetchTopics,
   fetchArticles,
   fetchArticleById,
   addNewComment,
+  checkArticleId,
+  checkNewComment,
 };
