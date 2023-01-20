@@ -73,8 +73,6 @@ const getArticleComments = (request, response, next) => {
 const patchArticleVotes = (request, response, next) => {
   const { article_id: articleId } = request.params;
   const votes = request.body;
-  console.log(votes);
-  console.log(articleId);
 
   return Promise.all([checkArticleId(articleId), checkVotes(votes)])
     .then((checkedVotes) => {
