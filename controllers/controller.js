@@ -39,7 +39,7 @@ const getArticleById = (request, response, next) => {
       next(error);
     });
 };
-
+// move checkId and checkNewComment to model
 const postComments = (request, response, next) => {
   const { article_id: articleId } = request.params;
   const newComment = request.body;

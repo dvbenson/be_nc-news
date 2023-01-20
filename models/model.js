@@ -45,7 +45,7 @@ const fetchArticleById = (article_id) => {
     }
   });
 };
-
+//move checkId and checkNewComment to here
 const addNewComment = (articleId, newComment) => {
   return db
     .query(
@@ -59,6 +59,7 @@ const addNewComment = (articleId, newComment) => {
       return result.rows[0];
     });
 };
+
 const fetchArticleComments = (article_id) => {
   const queryStr = format(`
   SELECT *

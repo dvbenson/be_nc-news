@@ -209,5 +209,7 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Invalid Comment Format");
         });
     });
+    //test articleId is valid
+    //test username exists
   });
 });
