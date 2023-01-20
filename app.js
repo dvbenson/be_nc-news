@@ -1,15 +1,22 @@
 const {
   getTopics,
   getArticles,
+  getArticleComments,
   getArticleById,
+  postComments,
 } = require("./controllers/controller.js");
+const db = require("./db/connection");
 const express = require("express");
 const app = express();
-const db = require("./db/connection");
+
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.post("/api/articles/:article_id/comments", postComments);
 
 app.use((error, request, response, next) => {
   if (error.status && error.msg) {
@@ -21,13 +28,17 @@ app.use((error, request, response, next) => {
 
 app.use((error, request, response, next) => {
   if (error.code === "22P02") {
-    response.status(400).send({ msg: "Bad Request" });
+    response.status(400).send({ msg: "SQL Syntax Error" });
+  } else if ((error.code = "42601")) {
+    response.status(400).send({ msg: "SQL Syntax Error" });
+  } else {
+    next(error);
   }
 });
 
 app.use((error, request, response, next) => {
   console.log(error);
-  response.status(500).send({ msg: "Internal Serve Error" });
+  response.status(500).send({ msg: "Internal Server Error" });
 });
 
-module.exports = { app };
+module.exports = app;

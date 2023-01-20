@@ -2,6 +2,11 @@ const {
   convertTimestampToDate,
   createRef,
   formatComments,
+  checkArticleId,
+  checkNewComment,
+  checkOrder,
+  checkSortBy,
+  checkTopic,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -102,3 +107,72 @@ describe("formatComments", () => {
     expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
   });
 });
+
+describe("checkNewComment", () => {
+  test("returns an object when requirements met", () => {
+    const input = { username: "bob", body: "im bob" };
+    expect(typeof checkNewComment(input)).toBe("object");
+  });
+  test("checks if newComment has required properties, returns if true", () => {
+    const input = { username: "bob", body: "im bob" };
+    expect(checkNewComment(input)).toBe(input);
+  });
+  test("checks if newComment has required properties, rejects if false", () => {
+    const input = { firstname: "bob", secondname: "henry" };
+    expect(checkNewComment(input)).rejects.toEqual({
+      status: 400,
+      msg: "Invalid Comment Format",
+    });
+  });
+});
+
+describe("checkArticleId", () => {
+  test("only validates numbers", () => {
+    const testId = 1;
+
+    expect(typeof checkArticleId(testId)).toBe("number");
+  });
+  test("returns an articleId if it is validated", () => {
+    const testId = 1;
+
+    expect(checkArticleId(testId)).toBe(testId);
+  });
+  test("rejects an articleId if it is not a number", () => {
+    const testId = "password123";
+
+    expect(checkArticleId(testId)).rejects.toEqual({
+      status: 400,
+      msg: `Invalid Article ID: please try again`,
+    });
+  });
+});
+
+// describe.only("checkTopic", () => {
+//   test("checks if topic exists, rejects if false", () => {
+//     const input = "redDucks";
+//     expect(checkTopic(input)).rejects.toEqual({
+//       status: 404,
+//       msg: "This topic does not exist",
+//     });
+//   });
+// });
+
+// describe.only("checkSortBy", () => {
+//   test("checks if sort_by exists, rejects if false", () => {
+//     const input = "my favourite thing";
+//     expect(checkSortBy(input)).rejects.toEqual({
+//       status: 400,
+//       msg: `Accepted sort_by queries: article_id, title, votes, topic, author`,
+//     });
+//   });
+// });
+
+// describe.only("checkOrder", () => {
+//   test("checks if order exists, rejects if false", () => {
+//     const input = "longwise";
+//     expect(checkOrder(input)).rejects.toEqual({
+//       status: 400,
+//       msg: `Accepted order queries: asc = ascending or desc = descending`,
+//     });
+//   });
+// });
