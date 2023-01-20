@@ -6,7 +6,11 @@ const {
   fetchArticleById,
   addNewComment,
 } = require("../models/model.js");
-const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
+const {
+  checkArticleId,
+  checkNewComment,
+  checkOrder,
+} = require("../db/seeds/utils.js");
 
 const getTopics = (request, response, next) => {
   fetchTopics()
@@ -20,15 +24,24 @@ const getTopics = (request, response, next) => {
 };
 
 const getArticles = (request, response, next) => {
-  const { topic, sort_by, order } = request.query;
-  console.log(request.query);
+  const { topic } = request.query;
+  const { sort_by } = request.query;
+  const { order } = request.query;
 
-  return fetchArticles(topic, sort_by, order)
-    .then((articles) => {
-      response.status(200).send(articles.rows);
+  console.log(order);
+  return Promise.all([
+    checkTopic(topic),
+    checkTypeOf(sort_by),
+    checkOrder(order),
+  ])
+    .then((queries) => {
+      console.log(queries);
+      return fetchArticles(queries);
+    })
+    .then((results) => {
+      response.status(200).send(results);
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };

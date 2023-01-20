@@ -1,4 +1,5 @@
 const db = require("../connection.js");
+const { sort } = require("../data/test-data/articles.js");
 
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
@@ -48,19 +49,19 @@ exports.checkNewComment = (newComment) => {
 };
 
 exports.checkTopic = (topic) => {
-  if (topic) {
-    return db
-      .query(`SELECT * FROM topics WHERE topics.slug = $1;`, [topic])
-      .then((topic) => {
-        if (topic.rows.length === 0) {
-          return Promise.reject({
-            status: 404,
-            msg: "This topic does not exist",
-          });
-        }
-        return topic;
-      });
-  }
+  let correctTopic = topic;
+  return db
+    .query(`SELECT * FROM articles WHERE topic = $1;`, [topic])
+    .then((topic) => {
+      if (topic.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "This topic does not exist",
+        });
+      } else {
+        return correctTopic;
+      }
+    });
 };
 
 exports.checkSortBy = (sort_by) => {

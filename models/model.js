@@ -17,53 +17,44 @@ const fetchTopics = () => {
   return db.query(queryStr);
 };
 
-const fetchArticles = (topic, sort_by, order) => {
-  return Promise.all([
-    checkTopic(topic),
-    checkSortBy(sort_by),
-    checkOrder(order),
-  ]).then(([topic, sort_by, order]) => {
-    console.log([topic, sort_by, order]);
-    console.log(topic);
-    let query = `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+const fetchArticles = (queries) => {
+  console.log(queries);
+
+  let query = `SELECT articles.*, COUNT(comments.article_id) AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id `;
-    let byTopic = ``;
-    let groupBy = `GROUP BY articles.article_id `;
-    let sortBy = ``;
-    let orderBy = ``;
+  let byTopic = ``;
+  let groupBy = `GROUP BY articles.article_id `;
+  let sortBy = ``;
+  let orderBy = ``;
 
-    if (!checkSortBy(sort_by)) {
-      sortBy = `ORDER BY articles.created_at `;
-    } else if (
-      ["article_id", "title", "votes", "topic", "author"].includes(sort_by)
-    ) {
-      sortBy = `ORDER BY articles.${sort_by} `;
+  if (!checkSortBy(sort_by)) {
+    sortBy = `ORDER BY articles.created_at `;
+  } else if (
+    ["article_id", "title", "votes", "topic", "author"].includes(sort_by)
+  ) {
+    sortBy = `ORDER BY articles.${sort_by} `;
+  }
+
+  if (!checkOrder(order)) {
+    orderBy = `ASC;`;
+  } else if (order.toUpperCase() === "ASC" || order.toUpperCase() === "DESC") {
+    orderBy = `${order.toUpperCase()};`;
+  }
+
+  if (checkTopic(topic)) {
+    byTopic = `WHERE articles.topic = '${topic}' `;
+    query = query + byTopic;
+  }
+
+  return db.query(query + groupBy + sortBy + orderBy).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `This topic does not exist`,
+      });
     }
-
-    if (!checkOrder(order)) {
-      orderBy = `ASC;`;
-    } else if (
-      order.toUpperCase() === "ASC" ||
-      order.toUpperCase() === "DESC"
-    ) {
-      orderBy = `${order.toUpperCase()};`;
-    }
-
-    if (checkTopic(topic)) {
-      byTopic = `WHERE articles.topic = '${topic}' `;
-      query = query + byTopic;
-    }
-
-    return db.query(query + groupBy + sortBy + orderBy).then((result) => {
-      if (result.rows.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: `This topic does not exist`,
-        });
-      }
-      return result.rows;
-    });
+    return result.rows;
   });
 };
 
