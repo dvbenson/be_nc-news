@@ -4,6 +4,7 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index.js");
+const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
@@ -38,11 +39,25 @@ const fetchArticleById = (article_id) => {
   `);
   return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
     if (rowCount === 0) {
-      return Promise.reject({ status: 404, msg: "article_id not found" });
+      return Promise.reject({ status: 404, msg: "Article ID not found" });
     } else {
       return rows[0];
     }
   });
+};
+//move checkId and checkNewComment to here
+const addNewComment = (articleId, newComment) => {
+  return db
+    .query(
+      `INSERT INTO comments
+    (author, article_id, body)
+    VALUES ($1, $2, $3)
+    RETURNING *;`,
+      [newComment.username, articleId, newComment.body]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
 };
 
 const fetchArticleComments = (article_id) => {
@@ -83,7 +98,10 @@ const fetchUsers = () => {
 module.exports = {
   fetchTopics,
   fetchArticles,
-  fetchArticleComments,
   fetchArticleById,
   fetchUsers,
+  addNewComment,
+  checkArticleId,
+  checkNewComment,
+  fetchArticleComments,
 };

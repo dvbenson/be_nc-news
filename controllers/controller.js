@@ -4,7 +4,9 @@ const {
   fetchArticleComments,
   fetchArticleById,
   fetchUsers,
+  addNewComment,
 } = require("../models/model.js");
+const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
 
 const getTopics = (request, response, next) => {
   fetchTopics()
@@ -34,7 +36,24 @@ const getArticleById = (request, response, next) => {
     .then((article) => {
       response.status(200).send(article);
     })
-    .catch(next);
+    .catch((error) => {
+      next(error);
+    });
+};
+// move checkId and checkNewComment to model
+const postComments = (request, response, next) => {
+  const { article_id: articleId } = request.params;
+  const newComment = request.body;
+  return Promise.all([checkArticleId(articleId), checkNewComment(newComment)])
+    .then((postComment) => {
+      return addNewComment(postComment[0], postComment[1]);
+    })
+    .then((results) => {
+      response.status(201).send(results);
+    })
+    .catch((error) => {
+      next(error);
+    });
 };
 
 const getArticleComments = (request, response, next) => {
@@ -62,4 +81,6 @@ module.exports = {
   getArticleComments,
   getArticleById,
   getUsers,
+  postComments,
+  getArticleById,
 };
