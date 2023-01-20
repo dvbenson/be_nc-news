@@ -3,7 +3,9 @@ const {
   fetchArticles,
   fetchArticleComments,
   fetchArticleById,
+  addNewComment,
 } = require("../models/model.js");
+const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
 
 const getTopics = (request, response, next) => {
   fetchTopics()
@@ -33,9 +35,25 @@ const getArticleById = (request, response, next) => {
     .then((article) => {
       response.status(200).send(article);
     })
-    .catch(next);
+    .catch((error) => {
+      next(error);
+    });
 };
 
+const postComments = (request, response, next) => {
+  const { article_id: articleId } = request.params;
+  const newComment = request.body;
+  return Promise.all([checkArticleId(articleId), checkNewComment(newComment)])
+    .then((postComment) => {
+      return addNewComment(postComment[0], postComment[1]);
+    })
+    .then((results) => {
+      response.status(201).send(results);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
 const getArticleComments = (request, response, next) => {
   const { article_id } = request.params;
   fetchArticleComments(article_id)
@@ -44,4 +62,11 @@ const getArticleComments = (request, response, next) => {
     })
     .catch(next);
 };
-module.exports = { getTopics, getArticles, getArticleComments, getArticleById };
+
+module.exports = {
+  getTopics,
+  getArticles,
+  getArticleComments,
+  postComments,
+  getArticleById,
+};

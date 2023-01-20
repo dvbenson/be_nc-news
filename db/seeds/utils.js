@@ -1,3 +1,5 @@
+const db = require("../connection.js");
+
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
@@ -21,13 +23,26 @@ exports.formatComments = (comments, idLookup) => {
   });
 };
 
-exports.checkIdIsNum = (article_id) => {
-  if (typeof article_id === "number") {
-    return article_id;
-  } else {
-    return {
+exports.checkArticleId = (articleId) => {
+  if (/[^\d]/g.test(articleId)) {
+    return Promise.reject({
       status: 400,
-      msg: "Incorrect input, please check search",
-    };
+      msg: `Invalid Article ID: please try again`,
+    });
+  }
+  return articleId;
+};
+
+exports.checkNewComment = (newComment) => {
+  if (
+    !newComment.hasOwnProperty("username") &&
+    !newComment.hasOwnProperty("body")
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid Comment Format",
+    });
+  } else {
+    return newComment;
   }
 };

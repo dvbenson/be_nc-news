@@ -2,7 +2,8 @@ const {
   convertTimestampToDate,
   createRef,
   formatComments,
-  checkIdIsNum,
+  checkArticleId,
+  checkNewComment,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -104,18 +105,41 @@ describe("formatComments", () => {
   });
 });
 
-describe("checkIdIsNum", () => {
-  test("returns article_id if it is a number", () => {
+describe("checkNewComment", () => {
+  test("returns an object when requirements met", () => {
+    const input = { username: "bob", body: "im bob" };
+    expect(typeof checkNewComment(input)).toBe("object");
+  });
+  test("checks if newComment has required properties, returns if true", () => {
+    const input = { username: "bob", body: "im bob" };
+    expect(checkNewComment(input)).toBe(input);
+  });
+  test("checks if newComment has required properties, rejects if false", () => {
+    const input = { firstname: "bob", secondname: "henry" };
+    expect(checkNewComment(input)).rejects.toEqual({
+      status: 400,
+      msg: "Invalid Comment Format",
+    });
+  });
+});
+
+describe("checkArticleId", () => {
+  test("only validates numbers", () => {
     const testId = 1;
 
-    expect(typeof checkIdIsNum(testId)).toBe("number");
+    expect(typeof checkArticleId(testId)).toBe("number");
   });
-  test("returns error message if it is any other data type", () => {
-    const testId = "Barry";
+  test("returns an articleId if it is validated", () => {
+    const testId = 1;
 
-    expect(checkIdIsNum(testId)).toEqual({
+    expect(checkArticleId(testId)).toBe(testId);
+  });
+  test("rejects an articleId if it is not a number", () => {
+    const testId = "password123";
+
+    expect(checkArticleId(testId)).rejects.toEqual({
       status: 400,
-      msg: "Incorrect input, please check search",
+      msg: `Invalid Article ID: please try again`,
     });
   });
 });
