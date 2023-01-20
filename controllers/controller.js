@@ -5,8 +5,13 @@ const {
   fetchArticleById,
   fetchUsers,
   addNewComment,
+  updateArticleVotes,
 } = require("../models/model.js");
-const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
+const {
+  checkArticleId,
+  checkNewComment,
+  checkVotes,
+} = require("../db/seeds/utils.js");
 
 const getTopics = (request, response, next) => {
   fetchTopics()
@@ -65,6 +70,22 @@ const getArticleComments = (request, response, next) => {
     .catch(next);
 };
 
+const patchArticleVotes = (request, response, next) => {
+  const { article_id: articleId } = request.params;
+  const votes = request.body;
+  console.log(votes);
+  console.log(articleId);
+
+  return Promise.all([checkArticleId(articleId), checkVotes(votes)])
+    .then((checkedVotes) => {
+      return updateArticleVotes(checkedVotes[0], checkedVotes[1]);
+    })
+    .then((results) => {
+      response.status(200).send(results);
+    })
+    .catch(next);
+};
+
 const getUsers = (request, response, next) => {
   fetchUsers()
     .then((users) => {
@@ -83,4 +104,5 @@ module.exports = {
   getUsers,
   postComments,
   getArticleById,
+  patchArticleVotes,
 };
