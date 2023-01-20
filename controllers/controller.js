@@ -1,6 +1,7 @@
 const {
   fetchTopics,
   fetchArticles,
+  fetchArticleComments,
   fetchArticleById,
   fetchUsers,
 } = require("../models/model.js");
@@ -36,6 +37,15 @@ const getArticleById = (request, response, next) => {
     .catch(next);
 };
 
+const getArticleComments = (request, response, next) => {
+  const { article_id } = request.params;
+  fetchArticleComments(article_id)
+    .then((results) => {
+      response.status(200).send(results);
+    })
+    .catch(next);
+};
+
 const getUsers = (request, response, next) => {
   fetchUsers()
     .then((users) => {
@@ -46,4 +56,10 @@ const getUsers = (request, response, next) => {
     });
 };
 
-module.exports = { getTopics, getArticles, getArticleById, getUsers };
+module.exports = {
+  getTopics,
+  getArticles,
+  getArticleComments,
+  getArticleById,
+  getUsers,
+};
