@@ -1,6 +1,7 @@
 const {
   fetchTopics,
   fetchArticles,
+  fetchArticleComments,
   fetchArticleById,
   addNewComment,
 } = require("../models/model.js");
@@ -53,5 +54,19 @@ const postComments = (request, response, next) => {
       next(error);
     });
 };
+const getArticleComments = (request, response, next) => {
+  const { article_id } = request.params;
+  fetchArticleComments(article_id)
+    .then((results) => {
+      response.status(200).send(results);
+    })
+    .catch(next);
+};
 
-module.exports = { getTopics, getArticles, getArticleById, postComments };
+module.exports = {
+  getTopics,
+  getArticles,
+  getArticleComments,
+  postComments,
+  getArticleById,
+};
