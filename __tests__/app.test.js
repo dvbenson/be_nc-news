@@ -224,7 +224,7 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    test.only("400: throws an error if request body does not have inc_votes property", () => {
+    test("400: throws an error if request body does not have inc_votes property", () => {
       const articleId = 2;
       const newVote = { votes: 2 };
       return request(app)
@@ -232,14 +232,14 @@ describe("ERRORS", () => {
         .send(newVote)
         .expect(400);
     });
-    test.only("400: throws an error if request body is empty", () => {
+    test("400: throws an error if request body is empty", () => {
       const articleId = 2;
       return request(app)
         .patch(`/api/articles/${articleId}`)
         .send()
         .expect(400);
     });
-    test.only("422: throws an error if the value of inc_votes is invalid", () => {
+    test("422: throws an error if the value of inc_votes is invalid", () => {
       const articleId = 2;
       const newVote = { inc_votes: "string" };
       return request(app)
@@ -247,7 +247,7 @@ describe("ERRORS", () => {
         .send(newVote)
         .expect(422);
     });
-    test.only("422: throws an error if there is another property in the request body", () => {
+    test("422: throws an error if there is another property in the request body", () => {
       const articleId = 2;
       const newVote = { inc_votes: 2, name: "Doggo" };
       return request(app)
