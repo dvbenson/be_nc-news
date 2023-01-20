@@ -24,20 +24,7 @@ const getTopics = (request, response, next) => {
 };
 
 const getArticles = (request, response, next) => {
-  const { topic } = request.query;
-  const { sort_by } = request.query;
-  const { order } = request.query;
-
-  console.log(order);
-  return Promise.all([
-    checkTopic(topic),
-    checkTypeOf(sort_by),
-    checkOrder(order),
-  ])
-    .then((queries) => {
-      console.log(queries);
-      return fetchArticles(queries);
-    })
+  fetchArticles()
     .then((results) => {
       response.status(200).send(results);
     })
