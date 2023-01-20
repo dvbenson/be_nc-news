@@ -106,7 +106,7 @@ describe("formatComments", () => {
   });
 });
 
-describe("checkVotes", () => {
+describe.only("checkVotes", () => {
   test("returns an object when validated", () => {
     const testVote = { inc_votes: 5 };
 

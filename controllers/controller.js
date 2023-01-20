@@ -3,6 +3,7 @@ const {
   fetchArticles,
   fetchArticleComments,
   fetchArticleById,
+  fetchUsers,
   addNewComment,
   updateArticleVotes,
 } = require("../models/model.js");
@@ -44,7 +45,6 @@ const getArticleById = (request, response, next) => {
       next(error);
     });
 };
-
 // move checkId and checkNewComment to model
 const postComments = (request, response, next) => {
   const { article_id: articleId } = request.params;
@@ -73,6 +73,8 @@ const getArticleComments = (request, response, next) => {
 const patchArticleVotes = (request, response, next) => {
   const { article_id: articleId } = request.params;
   const votes = request.body;
+  console.log(votes);
+  console.log(articleId);
 
   return Promise.all([checkArticleId(articleId), checkVotes(votes)])
     .then((checkedVotes) => {
@@ -80,6 +82,14 @@ const patchArticleVotes = (request, response, next) => {
     })
     .then((results) => {
       response.status(200).send(results);
+    })
+    .catch(next);
+};
+
+const getUsers = (request, response, next) => {
+  fetchUsers()
+    .then((users) => {
+      response.status(200).send(users.rows);
     })
     .catch((error) => {
       next(error);
@@ -90,6 +100,8 @@ module.exports = {
   getTopics,
   getArticles,
   getArticleComments,
+  getArticleById,
+  getUsers,
   postComments,
   getArticleById,
   patchArticleVotes,

@@ -112,10 +112,26 @@ const updateArticleVotes = (articleId, votes) => {
   }
 };
 
+const fetchUsers = () => {
+  const queryStr = format(`
+  SELECT * 
+  FROM users;
+  `);
+
+  return db.query(queryStr).then((rows) => {
+    if (rows === 0) {
+      return Promise.reject({ status: 404, msg: "Unable to find: Users" });
+    } else {
+      return rows;
+    }
+  });
+};
+
 module.exports = {
   fetchTopics,
   fetchArticles,
   fetchArticleById,
+  fetchUsers,
   addNewComment,
   checkArticleId,
   checkNewComment,

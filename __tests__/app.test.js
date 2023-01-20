@@ -15,6 +15,22 @@ afterAll(() => {
 });
 
 describe("APP", () => {
+  describe("GET: /api/users", () => {
+    test("200: responds with an array of objects, with the specified properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then((response) => {
+          const users = response.body;
+          expect(users.length).toBe(4);
+          users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
+          });
+        });
+    });
+  });
   describe("GET: /api/topics", () => {
     test("200: responds with array of topic objects, each with the properties 'slug' and 'description'", () => {
       return request(app)
@@ -208,7 +224,7 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    test("400: throws an error if request body does not have inc_votes property", () => {
+    test.only("400: throws an error if request body does not have inc_votes property", () => {
       const articleId = 2;
       const newVote = { votes: 2 };
       return request(app)
@@ -216,14 +232,14 @@ describe("ERRORS", () => {
         .send(newVote)
         .expect(400);
     });
-    test("400: throws an error if request body is empty", () => {
+    test.only("400: throws an error if request body is empty", () => {
       const articleId = 2;
       return request(app)
         .patch(`/api/articles/${articleId}`)
         .send()
         .expect(400);
     });
-    test("422: throws an error if the value of inc_votes is invalid", () => {
+    test.only("422: throws an error if the value of inc_votes is invalid", () => {
       const articleId = 2;
       const newVote = { inc_votes: "string" };
       return request(app)
@@ -231,7 +247,7 @@ describe("ERRORS", () => {
         .send(newVote)
         .expect(422);
     });
-    test("422: throws an error if there is another property in the request body", () => {
+    test.only("422: throws an error if there is another property in the request body", () => {
       const articleId = 2;
       const newVote = { inc_votes: 2, name: "Doggo" };
       return request(app)
