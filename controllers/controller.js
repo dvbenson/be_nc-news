@@ -3,6 +3,7 @@ const {
   fetchArticles,
   fetchArticleComments,
   fetchArticleById,
+  fetchUsers,
   addNewComment,
 } = require("../models/model.js");
 const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
@@ -54,6 +55,7 @@ const postComments = (request, response, next) => {
       next(error);
     });
 };
+
 const getArticleComments = (request, response, next) => {
   const { article_id } = request.params;
   fetchArticleComments(article_id)
@@ -63,10 +65,22 @@ const getArticleComments = (request, response, next) => {
     .catch(next);
 };
 
+const getUsers = (request, response, next) => {
+  fetchUsers()
+    .then((users) => {
+      response.status(200).send(users.rows);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
 module.exports = {
   getTopics,
   getArticles,
   getArticleComments,
+  getArticleById,
+  getUsers,
   postComments,
   getArticleById,
 };
