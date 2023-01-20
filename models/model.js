@@ -45,6 +45,20 @@ const fetchArticleById = (article_id) => {
     }
   });
 };
+//move checkId and checkNewComment to here
+const addNewComment = (articleId, newComment) => {
+  return db
+    .query(
+      `INSERT INTO comments
+    (author, article_id, body)
+    VALUES ($1, $2, $3)
+    RETURNING *;`,
+      [newComment.username, articleId, newComment.body]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
 
 const fetchArticleComments = (article_id) => {
   const queryStr = format(`
@@ -64,20 +78,6 @@ const fetchArticleComments = (article_id) => {
       return rows;
     }
   });
-};
-
-const addNewComment = (articleId, newComment) => {
-  return db
-    .query(
-      `INSERT INTO comments
-    (author, article_id, body)
-    VALUES ($1, $2, $3)
-    RETURNING *;`,
-      [newComment.username, articleId, newComment.body]
-    )
-    .then((result) => {
-      return result.rows[0];
-    });
 };
 
 const updateArticleVotes = (articleId, votes) => {

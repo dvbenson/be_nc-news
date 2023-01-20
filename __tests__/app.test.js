@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
 const query = require("express");
+const { checkArticleId } = require("../db/seeds/utils.js");
 
 beforeEach(() => {
   return seed(testData);
@@ -238,5 +239,75 @@ describe("ERRORS", () => {
         .send(newVote)
         .expect(422);
     });
+  });
+});
+
+describe("POST: /api/articles/:article_id/comments", () => {
+  test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
+    const articleId = 1;
+    const newComment = { username: "icellusedkars", body: "im bob" };
+    return request(app)
+      .post(`/api/articles/${articleId}/comments`)
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body).toMatchObject({
+          comment_id: expect.any(Number),
+          body: newComment.body,
+          article_id: articleId,
+          author: newComment.username,
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+});
+
+describe("ERRORS", () => {
+  describe("GET", () => {
+    test("404: incorrect pathway", () => {
+      return request(app).get("/api/this-is-incorrect").expect(404);
+    });
+    test("404: returns an error for an article_id that doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article ID not found");
+        });
+    });
+    test("400: returns an error for an article_id with an invalid format", () => {
+      const testId = "ten";
+      return request(app)
+        .get("/api/articles/ten")
+        .expect(400)
+        .then(() => {
+          expect(checkArticleId(testId)).rejects.toEqual({
+            status: 400,
+            msg: `Invalid Article ID: please try again`,
+          });
+        });
+    });
+    test("404: no comments found for article_id", () => {
+      return request(app)
+        .get("/api/articles/4/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("This article has no comments yet");
+        });
+    });
+  });
+  describe("POST", () => {
+    test("400: bad body/missing required fields", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid Comment Format");
+        });
+    });
+    //test articleId is valid
+    //test username exists
   });
 });

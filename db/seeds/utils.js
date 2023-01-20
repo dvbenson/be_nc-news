@@ -1,3 +1,5 @@
+const db = require("../connection.js");
+
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
@@ -29,6 +31,20 @@ exports.checkArticleId = (articleId) => {
     });
   }
   return articleId;
+};
+
+exports.checkNewComment = (newComment) => {
+  if (
+    !newComment.hasOwnProperty("username") &&
+    !newComment.hasOwnProperty("body")
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid Comment Format",
+    });
+  } else {
+    return newComment;
+  }
 };
 
 exports.checkVotes = (votes) => {

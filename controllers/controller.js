@@ -45,15 +45,7 @@ const getArticleById = (request, response, next) => {
     });
 };
 
-const getArticleComments = (request, response, next) => {
-  const { article_id } = request.params;
-  fetchArticleComments(article_id)
-    .then((results) => {
-      response.status(200).send(results);
-    })
-    .catch(next);
-};
-
+// move checkId and checkNewComment to model
 const postComments = (request, response, next) => {
   const { article_id: articleId } = request.params;
   const newComment = request.body;
@@ -67,6 +59,15 @@ const postComments = (request, response, next) => {
     .catch((error) => {
       next(error);
     });
+};
+
+const getArticleComments = (request, response, next) => {
+  const { article_id } = request.params;
+  fetchArticleComments(article_id)
+    .then((results) => {
+      response.status(200).send(results);
+    })
+    .catch(next);
 };
 
 const patchArticleVotes = (request, response, next) => {
