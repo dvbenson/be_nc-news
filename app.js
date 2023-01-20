@@ -1,6 +1,7 @@
 const {
   getTopics,
   getArticles,
+  getArticleComments,
   getArticleById,
   patchArticleVotes,
 } = require("./controllers/controller.js");
@@ -13,6 +14,7 @@ app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.patch("/api/articles/:article_id", patchArticleVotes);
 
