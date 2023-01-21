@@ -95,6 +95,18 @@ const getUsers = (request, response, next) => {
     });
 };
 
+const searchComments = (request, response, next) => {
+  const { comment_id } = request.params;
+  consolelog(comment_id);
+  return deleteComments(comment_id)
+    .then((results) => {
+      response.status(204).send(results);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
 module.exports = {
   getTopics,
   getArticles,
@@ -104,4 +116,5 @@ module.exports = {
   postComments,
   getArticleById,
   patchArticleVotes,
+  searchComments,
 };
