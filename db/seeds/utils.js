@@ -49,19 +49,20 @@ exports.checkNewComment = (newComment) => {
 };
 
 exports.checkTopic = (topic) => {
-  let correctTopic = topic;
-  return db
-    .query(`SELECT * FROM articles WHERE topic = $1;`, [topic])
-    .then((topic) => {
-      if (topic.rows.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "This topic does not exist",
-        });
-      } else {
-        return correctTopic;
-      }
-    });
+  if (topic) {
+    return db
+      .query(`SELECT * FROM topics WHERE topics.slug = $1;`, [topic])
+      .then((topic) => {
+        if (topic.rows.length === 0) {
+          return Promise.reject({
+            status: 400,
+            msg: "This topic does not exist",
+          });
+        }
+        return topic;
+      });
+  }
+  return "Topic not defined";
 };
 
 exports.checkSortBy = (sort_by) => {
@@ -75,7 +76,7 @@ exports.checkSortBy = (sort_by) => {
   ) {
     return Promise.reject({
       status: 400,
-      msg: `Accepted sort_by queries: article_id, title, votes, topic, author`,
+      msg: `Sort_by query must be one of the following: article_id, title, votes, topic, author`,
     });
   }
 };
@@ -90,7 +91,7 @@ exports.checkOrder = (order) => {
   } else if (order.toUpperCase() !== "ASC" || order.toUpperCase() !== "DESC") {
     return Promise.reject({
       status: 400,
-      msg: `Accepted order queries: asc = ascending or desc = descending`,
+      msg: `Order must be "asc" (ascending) or "desc" (descending).`,
     });
   }
 };
