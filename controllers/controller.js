@@ -1,3 +1,4 @@
+const { topicData } = require("../db/data/test-data/index.js");
 const {
   fetchTopics,
   fetchArticles,
@@ -10,6 +11,7 @@ const {
 const {
   checkArticleId,
   checkNewComment,
+  checkOrder,
   checkVotes,
 } = require("../db/seeds/utils.js");
 
@@ -26,11 +28,10 @@ const getTopics = (request, response, next) => {
 
 const getArticles = (request, response, next) => {
   fetchArticles()
-    .then((articles) => {
-      response.status(200).send(articles.rows);
+    .then((results) => {
+      response.status(200).send(results);
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };

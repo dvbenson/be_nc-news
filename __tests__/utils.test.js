@@ -5,6 +5,9 @@ const {
   checkArticleId,
   checkVotes,
   checkNewComment,
+  checkOrder,
+  checkSortBy,
+  checkTopic,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -180,3 +183,33 @@ describe("checkArticleId", () => {
     });
   });
 });
+
+// describe.only("checkTopic", () => {
+//   test("checks if topic exists, rejects if false", () => {
+//     const input = "redDucks";
+//     expect(checkTopic(input)).rejects.toEqual({
+//       status: 404,
+//       msg: "This topic does not exist",
+//     });
+//   });
+// });
+
+// describe.only("checkSortBy", () => {
+//   test("checks if sort_by exists, rejects if false", () => {
+//     const input = "my favourite thing";
+//     expect(checkSortBy(input)).rejects.toEqual({
+//       status: 400,
+//       msg: `Accepted sort_by queries: article_id, title, votes, topic, author`,
+//     });
+//   });
+// });
+
+// describe.only("checkOrder", () => {
+//   test("checks if order exists, rejects if false", () => {
+//     const input = "longwise";
+//     expect(checkOrder(input)).rejects.toEqual({
+//       status: 400,
+//       msg: `Accepted order queries: asc = ascending or desc = descending`,
+//     });
+//   });
+// });
