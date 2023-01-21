@@ -3,6 +3,7 @@ const {
   createRef,
   formatComments,
   checkArticleId,
+  checkVotes,
   checkNewComment,
   checkOrder,
   checkSortBy,
@@ -105,6 +106,42 @@ describe("formatComments", () => {
     const comments = [{ created_at: timestamp }];
     const formattedComments = formatComments(comments, {});
     expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
+  });
+});
+
+describe("checkVotes", () => {
+  test("returns an object when validated", () => {
+    const testVote = { inc_votes: 5 };
+
+    expect(typeof checkVotes(testVote)).toEqual("object");
+  });
+  test("returns the votes object when it meets validation criteria", () => {
+    const testVote = { inc_votes: 5 };
+
+    expect(checkVotes(testVote)).toEqual({ inc_votes: 5 });
+  });
+  test("rejects the votes object if it doesn't have the inc_votes property", () => {
+    const testVote = { lots_of_votes: 1234 };
+
+    expect(checkVotes(testVote)).rejects.toEqual({
+      status: 400,
+      msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
+    });
+  });
+  test("rejects the votes object if it doesn't have the a number for a value", () => {
+    const testVote = { inc_votes: "String" };
+
+    expect(checkVotes(testVote)).rejects.toEqual({
+      status: 422,
+      msg: "Votes must be an number!",
+    });
+  });
+  test("rejects the votes object if it doesn't have the correct amount of properties", () => {
+    const testVote = { inc_votes: 54, emoji: "smiley face" };
+    expect(checkVotes(testVote)).rejects.toEqual({
+      status: 422,
+      msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
+    });
   });
 });
 

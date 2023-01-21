@@ -84,14 +84,63 @@ const fetchArticleComments = (article_id) => {
   });
 };
 
+const updateArticleVotes = (articleId, votes) => {
+  if (votes.inc_votes < 0) {
+    let newVoteNum = Math.abs(votes.inc_votes);
+    return db
+      .query(
+        `
+    UPDATE articles
+    SET votes = votes - $1
+    WHERE article_id = $2
+    RETURNING *;`,
+        [newVoteNum, articleId]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  } else if (votes.inc_votes > 0) {
+    return db
+      .query(
+        `
+    UPDATE articles
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *;
+    `,
+        [votes.inc_votes, articleId]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  }
+};
+
+const fetchUsers = () => {
+  const queryStr = format(`
+  SELECT * 
+  FROM users;
+  `);
+
+  return db.query(queryStr).then((rows) => {
+    if (rows === 0) {
+      return Promise.reject({ status: 404, msg: "Unable to find: Users" });
+    } else {
+      return rows;
+    }
+  });
+};
+
 module.exports = {
   fetchTopics,
   fetchArticles,
   fetchArticleById,
+  fetchUsers,
   addNewComment,
   checkArticleId,
   checkNewComment,
   fetchArticleComments,
+  updateArticleVotes,
 };
 
 // `
