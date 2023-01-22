@@ -114,3 +114,13 @@ exports.checkVotes = (votes) => {
   }
   return votes;
 };
+
+exports.validateComment = (comment_id) => {
+  if (/[^\d]/g.test(comment_id)) {
+    return Promise.reject({
+      status: 400,
+      msg: `Comment ID can only be in number format!`,
+    });
+  }
+  return comment_id;
+};

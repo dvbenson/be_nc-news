@@ -4,11 +4,18 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index.js");
-const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
+const {
+  checkArticleId,
+  checkNewComment,
+  checkCommentExists,
+  validateComment,
+  checkOrder,
+  checkSortBy,
+  checkTopic,
+} = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
-const { checkTopic, checkSortBy, checkOrder } = require("../db/seeds/utils.js");
 
 const fetchTopics = () => {
   const queryStr = format(`SELECT * 
@@ -131,6 +138,17 @@ const fetchUsers = () => {
   });
 };
 
+const deleteComments = (comment_id) => {
+  return Promise.all([validateComment(comment_id)]).then(([comment_id]) => {
+    return db.query(
+      `
+    DELETE FROM comments WHERE comment_id = $1;
+    `,
+      [comment_id]
+    );
+  });
+};
+
 module.exports = {
   fetchTopics,
   fetchArticles,
@@ -141,59 +159,5 @@ module.exports = {
   checkNewComment,
   fetchArticleComments,
   updateArticleVotes,
+  deleteComments,
 };
-
-// `
-//     SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url,
-//     COUNT(comments.article_id)
-//     AS comment_count
-//     FROM articles
-//     LEFT JOIN comments
-//     ON articles.article_id = comments.article_id
-//     GROUP BY articles.article_id
-//     ORDER BY created_at DESC;`
-//comment_count query ^^^
-
-// const queryValues = [topic];
-
-// if (topic) {
-//   let queryStr = `
-//     SELECT articles.$1
-//     COUNT(comments.article_id)
-//     AS comment_count
-//     FROM articles
-//     LEFT JOIN comments
-//     ON articles.article_id = comments.article_id
-//     GROUP BY articles.article_id
-
-//     `;
-//   queryStr += `ORDER BY ${sort_by} ${order.toUpperCase()};`;
-
-//   if (!acceptedSortBys.includes(sort_by)) {
-//     return Promise.reject({
-//       status: 400,
-//       msg: "That sort category does not exist!",
-//     });
-//   }
-//   return db.query(queryStr, queryValues);
-// } else {
-//   let queryStr = `
-//     SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url,
-//     COUNT(comments.article_id)
-//     AS comment_count
-//     FROM articles
-//     LEFT JOIN comments
-//     ON articles.article_id = comments.article_id
-//     GROUP BY articles.article_id
-
-//     `;
-//   queryStr += `ORDER BY ${sort_by} ${order.toUpperCase()};`;
-
-//   if (!acceptedSortBys.includes(sort_by)) {
-//     return Promise.reject({
-//       status: 400,
-//       msg: "That sort category does not exist!",
-//     });
-//   }
-//   return db.query(queryStr, queryValues);
-// }
