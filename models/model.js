@@ -24,22 +24,50 @@ const fetchTopics = () => {
   return db.query(queryStr);
 };
 
-const fetchArticles = () => {
-  return db
-    .query(
-      `
-     SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url,
-    COUNT(comments.article_id)
-    AS comment_count
-    FROM articles
-    LEFT JOIN comments
-    ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id
-    ORDER BY created_at DESC;`
-    )
-    .then((results) => {
-      return results.rows;
+const fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
+  const validSortBys = [
+    "title",
+    "topic",
+    "author",
+    "body",
+    "votes",
+    "created_at",
+    "comment_count",
+  ];
+  const validOrder = ["asc", "desc"];
+
+  if (!validSortBys.includes(sort_by) || !validOrder.includes(order)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Query not accepted, please try again",
     });
+  }
+  let selectQuery = ` 
+  SELECT articles.*,
+  COUNT (comments.article_id) as comment_count
+  FROM articles
+  LEFT JOIN comments
+  ON articles.article_id = comments.article_id
+  `;
+  const queryParams = [];
+
+  if (topic) {
+    queryParams.push(topic);
+    selectQuery += `
+    WHERE topic LIKE $1
+    GROUP BY (articles.article_id)
+    ORDER BY ${sort_by} ${order}
+    `;
+  } else {
+    selectQuery += `
+    GROUP BY (articles.article_id)
+    ORDER BY ${sort_by} ${order}
+    `;
+  }
+
+  return db.query(selectQuery, queryParams).then((results) => {
+    return results.rows;
+  });
 };
 
 const fetchArticleById = (article_id) => {

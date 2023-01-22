@@ -95,63 +95,57 @@ describe("GET: /api/articles", () => {
   });
 });
 
-// describe("GET: /api/articles (QUERIES)", () => {
-//   //test topic
-//   test("200: get request can take a query which filters articles by a single topic", () => {
-//     return request(app)
-//       .get("/api/articles?topic=cats")
-//       .expect(200)
-//       .then((response) => {
-//         const articles = response.body;
-//         articles.forEach((article) => {
-//           expect(article.topic).toBe("cats");
-//         });
-//       });
-//   });
-//   //test sort_by
-//   test("200: get request can take a query which groups articles by sort_by", () => {
-//     return request(app)
-//       .get("/api/articles?sort_by=title")
-//       .expect(200)
-//       .then((response) => {
-//         const articles = response.body;
+describe("GET: /api/articles (QUERIES)", () => {
+  test("200: get request can take a query which filters articles by a single topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        articles.forEach((article) => {
+          expect(article.topic).toBe("cats");
+        });
+      });
+  });
+  test("200: get request can take a query which groups articles by sort_by", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body;
 
-//         expect(articles[articles.length - 1].title).toBe("placeholderZ");
-//         expect(articles[0].title).toBe("placeholderA");
-//       });
-//   });
-//   //test order
-//   test("200: get request can take a query which organises articles in order", () => {
-//     return request(app)
-//       .get("/api/articles?order=asc")
-//       .expect(200)
-//       .then((response) => {
-//         const articles = response.body;
-//         expect(articles[0].created_at).toBe("2020-01-07T14:08:00.000Z");
-//         expect(articles[articles.length - 1].created_at).toBe(
-//           "2020-11-03T09:12:00.000Z"
-//         );
-//         expect(articles[0].created_at).not.toBe("2020-11-03T09:12:00.000Z");
-//         expect(articles[articles.length - 1].created_at).not.toBe(
-//           "2020-01-04T00:24:00.000Z"
-//         );
-//       });
-//   });
+        expect(articles[0].title).toBe("Z");
+        expect(articles[articles.length - 1].title).toBe("A");
+      });
+  });
+  test("200: get request can take a query which organises articles in order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(articles[0].created_at).toBe("2020-01-07T14:08:00.000Z");
+        expect(articles[articles.length - 1].created_at).toBe(
+          "2020-11-03T09:12:00.000Z"
+        );
+        expect(articles[0].created_at).not.toBe("2020-11-03T09:12:00.000Z");
+        expect(articles[articles.length - 1].created_at).not.toBe(
+          "2020-01-04T00:24:00.000Z"
+        );
+      });
+  });
 
-//   describe("ERROR: article queries", () => {
-//     test("404: topic doesn't exist", () => {
-//       return request(app).get("/api/articles?topic=handcream").expect(404);
-//     });
-//     test("400: sort_by doesn't exist", () => {
-//       return request(app)
-//         .get("/api/articles?sort_by=my_favourite_thing")
-//         .expect(400);
-//     });
-//     test("400: order doesn't exist", () => {
-//       return request(app).get("/api/articles?order=longwise").expect(400);
-//     });
-//   });
-// });
+  describe("ERROR: article queries", () => {
+    test("400: sort_by doesn't exist", () => {
+      return request(app)
+        .get("/api/articles?sort_by=my_favourite_thing")
+        .expect(400);
+    });
+    test("400: order doesn't exist", () => {
+      return request(app).get("/api/articles?order=longwise").expect(400);
+    });
+  });
+});
 
 describe("GET: /api/articles/:article_id", () => {
   test("200: query sends an article object using the specific article_id", () => {
