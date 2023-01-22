@@ -116,33 +116,11 @@ exports.checkVotes = (votes) => {
 };
 
 exports.validateComment = (comment_id) => {
-  console.log(comment_id);
-  if (typeof comment_id === "number") {
-    return comment_id;
-  } else {
+  if (/[^\d]/g.test(comment_id)) {
     return Promise.reject({
       status: 400,
-      msg: "Comment ID can only be in number format!",
+      msg: `Comment ID can only be in number format!`,
     });
   }
-};
-
-exports.checkCommentExists = (comment_id) => {
-  return db
-    .query(
-      `
-  SELECT * FROM comments WHERE comment_id = $1;
-  `,
-      [comment_id]
-    )
-    .then(({ rowCount }) => {
-      if (rowCount === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "No comments exist with that comment ID",
-        });
-      } else {
-        return comment_id;
-      }
-    });
+  return comment_id;
 };

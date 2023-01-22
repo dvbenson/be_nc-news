@@ -8,11 +8,14 @@ const {
   checkArticleId,
   checkNewComment,
   checkCommentExists,
+  validateComment,
+  checkOrder,
+  checkSortBy,
+  checkTopic,
 } = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
-const { checkTopic, checkSortBy, checkOrder } = require("../db/seeds/utils.js");
 
 const fetchTopics = () => {
   const queryStr = format(`SELECT * 
@@ -136,35 +139,13 @@ const fetchUsers = () => {
 };
 
 const deleteComments = (comment_id) => {
-  return validateComment(comment_id).then((comment_id) => {
-    return checkCommentExists(comment_id).then((comment_id) => {
-      return db
-        .query(
-          `
+  return Promise.all([validateComment(comment_id)]).then(([comment_id]) => {
+    return db.query(
+      `
     DELETE FROM comments WHERE comment_id = $1;
     `,
-          [comment_id]
-        )
-        .then((comment_id) => {
-          return db
-            .query(
-              `
-    SELECT * FROM comments WHERE comment_id = $1
-    `,
-              [comment_id]
-            )
-            .then((results) => {
-              if (results.rows > 0) {
-                return Promise.reject({
-                  status: 404,
-                  msg: "This article was unsuccessfully deleted",
-                });
-              } else {
-                return results.rows[0];
-              }
-            });
-        });
-    });
+      [comment_id]
+    );
   });
 };
 

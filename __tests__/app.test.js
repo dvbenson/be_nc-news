@@ -185,7 +185,7 @@ describe("GET: /api/articles/:article_id", () => {
         .get("/api/articles/ten")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("SQL Syntax Error");
+          expect(body.msg).toBe("Bad Request");
         });
     });
   });
@@ -327,34 +327,34 @@ describe("POST: /api/articles/:article_id/comments", () => {
   });
 });
 
-// describe.only("DELETE: /api/comments/:comment_id", () => {
-//   test("204: content deleted under specified id number, returns an empty object", () => {
-//     return request(app)
-//       .delete(`/api/comments/1`)
-//       .expect(204)
-//       .then((response) => {
-//         expect(response.body).toBe({});
-//       });
-//   });
-//   describe("ERROR: /api/comments/:comment_id", () => {
-//     test("404: no comments exist with that identifier", () => {
-//       return request(app)
-//         .delete("/api/comments/22")
-//         .expect(404)
-//         .then(({ body }) => {
-//           expect(body.msg).toBe("No comments exist with that comment ID");
-//         });
-//     });
-//     test("400: incorrect comment ID format inputted", () => {
-//       return request(app)
-//         .delete("/api/comments/string")
-//         .expect(400)
-//         .then(({ body }) => {
-//           expect(body.msg).toBe("Comment ID can only be in number format!");
-//         });
-//     });
-//   });
-// });
+describe("DELETE: /api/comments/:comment_id", () => {
+  test("204: content deleted under specified id number, returns an empty object", () => {
+    return request(app)
+      .delete(`/api/comments/1`)
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
+  describe("ERROR: /api/comments/:comment_id", () => {
+    test("404: no comments exist with that identifier", () => {
+      return request(app)
+        .delete("/api/comments/22")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No comments exist with that comment ID");
+        });
+    });
+    test("400: incorrect comment ID format inputted", () => {
+      return request(app)
+        .delete("/api/comments/string")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Comment ID can only be in number format!");
+        });
+    });
+  });
+});
 
 describe("ERRORS: universal", () => {
   test("404: incorrect pathway", () => {

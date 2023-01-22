@@ -9,7 +9,11 @@ const {
   checkSortBy,
   checkTopic,
   checkComments,
+  validateComment,
+  checkCommentExists,
 } = require("../db/seeds/utils");
+
+const { deleteComments } = require("../models/model.js");
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -215,23 +219,16 @@ describe("checkArticleId", () => {
 //   });
 // });
 
-// describe.only("checkComments", () => {
-//   test("rejects the comment_id if it is passed a value that isn't a number", () => {
-//     const testId = "string";
-//     expect(checkComments(testId)).rejects.toEqual({
-//       status: 400,
-//       msg: "Comment ID can only be in number format!",
-//     });
-//   });
-//   // test("rejects the comment_id if it is a number but holds no comments", () => {
-//   //   const testId = 22;
-//   //   expect(checkComments(testId)).rejects.toEqual({
-//   //     status: 404,
-//   //     msg: "No comments exist with that comment ID",
-//   //   });
-//   // });
-//   test("returns a valid comment_id", () => {
-//     const testId = 1;
-//     expect(checkComments(testId)).toEqual(testId);
-//   });
-// });
+describe("validateComment", () => {
+  test("rejects the comment_id if it is passed a value that isn't a number", () => {
+    const testId = "string";
+    expect(validateComment(testId)).rejects.toEqual({
+      status: 400,
+      msg: "Comment ID can only be in number format!",
+    });
+  });
+  test("returns a valid comment_id", () => {
+    const testId = 1;
+    expect(validateComment(testId)).toBe(1);
+  });
+});

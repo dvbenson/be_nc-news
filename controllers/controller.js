@@ -7,6 +7,7 @@ const {
   fetchUsers,
   addNewComment,
   updateArticleVotes,
+  deleteComments,
 } = require("../models/model.js");
 const {
   checkArticleId,
@@ -97,10 +98,15 @@ const getUsers = (request, response, next) => {
 
 const searchComments = (request, response, next) => {
   const { comment_id } = request.params;
-  consolelog(comment_id);
-  return deleteComments(comment_id)
-    .then((results) => {
-      response.status(204).send(results);
+  deleteComments(comment_id)
+    .then((result) => {
+      if (result.rowCount === 1) {
+        response.status(204).send({ msg: "Comment Deleted" });
+      } else if (result.rowCount === 0) {
+        response.status(404).send({
+          msg: `No comments exist with that comment ID`,
+        });
+      }
     })
     .catch((error) => {
       next(error);
