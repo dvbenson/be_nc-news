@@ -8,7 +8,12 @@ const {
   checkOrder,
   checkSortBy,
   checkTopic,
+  checkComments,
+  validateComment,
+  checkCommentExists,
 } = require("../db/seeds/utils");
+
+const { deleteComments } = require("../models/model.js");
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -213,3 +218,17 @@ describe("checkArticleId", () => {
 //     });
 //   });
 // });
+
+describe("validateComment", () => {
+  test("rejects the comment_id if it is passed a value that isn't a number", () => {
+    const testId = "string";
+    expect(validateComment(testId)).rejects.toEqual({
+      status: 400,
+      msg: "Comment ID can only be in number format!",
+    });
+  });
+  test("returns a valid comment_id", () => {
+    const testId = 1;
+    expect(validateComment(testId)).toBe(1);
+  });
+});

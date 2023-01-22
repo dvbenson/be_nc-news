@@ -6,6 +6,7 @@ const {
   patchArticleVotes,
   getUsers,
   postComments,
+  searchComments,
 } = require("./controllers/controller.js");
 const db = require("./db/connection");
 const express = require("express");
@@ -20,6 +21,7 @@ app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 app.patch("/api/articles/:article_id", patchArticleVotes);
 app.post("/api/articles/:article_id/comments", postComments);
+app.delete("/api/comments/:comment_id", searchComments);
 
 app.use((error, request, response, next) => {
   if (error.status && error.msg) {
@@ -31,9 +33,7 @@ app.use((error, request, response, next) => {
 
 app.use((error, request, response, next) => {
   if (error.code === "22P02") {
-    response.status(400).send({ msg: "SQL Syntax Error" });
-  } else if ((error.code = "42601")) {
-    response.status(400).send({ msg: "SQL Syntax Error" });
+    response.status(400).send({ msg: "Bad Request" });
   } else {
     next(error);
   }

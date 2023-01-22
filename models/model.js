@@ -4,11 +4,18 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index.js");
-const { checkArticleId, checkNewComment } = require("../db/seeds/utils.js");
+const {
+  checkArticleId,
+  checkNewComment,
+  checkCommentExists,
+  validateComment,
+  checkOrder,
+  checkSortBy,
+  checkTopic,
+} = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
-const { checkTopic, checkSortBy, checkOrder } = require("../db/seeds/utils.js");
 
 const fetchTopics = () => {
   const queryStr = format(`SELECT * 
@@ -131,6 +138,17 @@ const fetchUsers = () => {
   });
 };
 
+const deleteComments = (comment_id) => {
+  return Promise.all([validateComment(comment_id)]).then(([comment_id]) => {
+    return db.query(
+      `
+    DELETE FROM comments WHERE comment_id = $1;
+    `,
+      [comment_id]
+    );
+  });
+};
+
 module.exports = {
   fetchTopics,
   fetchArticles,
@@ -141,4 +159,5 @@ module.exports = {
   checkNewComment,
   fetchArticleComments,
   updateArticleVotes,
+  deleteComments,
 };
