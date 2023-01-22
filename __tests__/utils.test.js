@@ -13,7 +13,7 @@ const {
   checkCommentExists,
 } = require("../db/seeds/utils");
 
-const { deleteComments } = require("../models/model.js");
+const { deleteComments, fetchArticles } = require("../models/model.js");
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -188,36 +188,6 @@ describe("checkArticleId", () => {
     });
   });
 });
-
-// describe.only("checkTopic", () => {
-//   test("checks if topic exists, rejects if false", () => {
-//     const input = "redDucks";
-//     expect(checkTopic(input)).rejects.toEqual({
-//       status: 404,
-//       msg: "This topic does not exist",
-//     });
-//   });
-// });
-
-// describe.only("checkSortBy", () => {
-//   test("checks if sort_by exists, rejects if false", () => {
-//     const input = "my favourite thing";
-//     expect(checkSortBy(input)).rejects.toEqual({
-//       status: 400,
-//       msg: `Accepted sort_by queries: article_id, title, votes, topic, author`,
-//     });
-//   });
-// });
-
-// describe.only("checkOrder", () => {
-//   test("checks if order exists, rejects if false", () => {
-//     const input = "longwise";
-//     expect(checkOrder(input)).rejects.toEqual({
-//       status: 400,
-//       msg: `Accepted order queries: asc = ascending or desc = descending`,
-//     });
-//   });
-// });
 
 describe("validateComment", () => {
   test("rejects the comment_id if it is passed a value that isn't a number", () => {
