@@ -7,11 +7,7 @@ const {
 const {
   checkArticleId,
   checkNewComment,
-  checkCommentExists,
   validateComment,
-  checkOrder,
-  checkSortBy,
-  checkTopic,
 } = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
 const format = require("pg-format");

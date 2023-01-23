@@ -9,6 +9,7 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  //GET users
   "GET /api/articles": {
     "description": "serves an array of all topics",
     "queries": ["author", "topic", "sort_by", "order"],
@@ -23,5 +24,24 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an object of a single article",
+    "queries": ["author", "topic", "sort_by", "order"],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 1,
+          "title": "coding",
+          "author": "bigboygump",
+          "body": "I like coding",
+          "created_at": 198783284593543
+        }
+      ]
+    }
   }
+  //PATCH article votes
+  //GET comments
+  //POST comments
+  //DELETE comments
 }
