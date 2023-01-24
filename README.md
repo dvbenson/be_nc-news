@@ -35,7 +35,7 @@ Users are able to access and interact with news data using the following **endpo
 
 - **DELETE** a comment
 
-### **Hosted Version**
+## **Hosted Version**
 
 ---
 
@@ -47,12 +47,12 @@ Here is a live version of this app, hosted with [Render.](https://badsauce-webse
 
 _Follow the below instructions to get yourself started._
 
-### **Installation and Minimum Requirements:**
+## **Installation and Minimum Requirements:**
 
 - **Node.js:** 19.0.0 or later
 - **PostgreSQL:** 12.12 or later
 
-### **Cloning the respository:**
+## **Cloning the respository:**
 
 In your terminal, create a directory to clone the repository into:
 
@@ -72,7 +72,7 @@ Clone the repository:
 $ git clone https://github.com/dvbenson/Project1_news_api.git
 ```
 
-### **Dependencies:**
+## **Dependencies:**
 
 ---
 
@@ -82,7 +82,7 @@ Run the below code in your terminal to install all required dependencies:
 $ npm install
 ```
 
-### **Dev & Test Environments:**
+## **Dev & Test Environments:**
 
 Create two .env files:
 
@@ -103,7 +103,7 @@ Your `.env.test` file must contain the following line:
 PGDATABASE=nc_news_test
 ```
 
-### **Database setup and seeding**
+## **Database setup and seeding**
 
 To setup both your development and test databases, run the following scripts:
 
@@ -119,7 +119,7 @@ Seeding:
 $ npm run seed
 ```
 
-### **Testing**
+## **Testing**
 
 The jest test suite is utilised for this app. Tests can be run with
 the following script:
