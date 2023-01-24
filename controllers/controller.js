@@ -15,6 +15,11 @@ const {
   checkOrder,
   checkVotes,
 } = require("../db/seeds/utils.js");
+const allEndPoints = require("../endpoints.json");
+
+const getAllEndPoints = (request, response, next) => {
+  response.status(200).send({ allEndPoints });
+};
 
 const getTopics = (request, response, next) => {
   fetchTopics()
@@ -124,4 +129,5 @@ module.exports = {
   getArticleById,
   patchArticleVotes,
   searchComments,
+  getAllEndPoints,
 };

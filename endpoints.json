@@ -9,18 +9,62 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
-  //GET users
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": [
+      {
+        "username": "hello_itsme",
+        "name": "Gertrude",
+        "avatar_url": "https://myavatar.gothib.com/12345"
+      },
+      {
+        "username": "catch_me_ifyouwill",
+        "name": "Leonard",
+        "avatar_url": "https://myavatar.gothib.com/12444"
+      },
+      {
+        "username": "football_mylove",
+        "name": "Akin",
+        "avatar_url": "https://myavatar.gothib.com/123321"
+      }
+    ]
+  },
   "GET /api/articles": {
     "description": "serves an array of all topics",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 12,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1527695953341,
+          "votes": 35,
+          "article_url": "https://myavatar.gothib.com/134345",
+          "comment_count": 9
+        },
+        {
+          "title": "Why greenhouse gases prefer outter-space",
+          "topic": "science",
+          "author": "therealNeilDegrasse",
+          "body": "Text from the article..",
+          "created_at": 8745934800879487,
+          "votes": 2,
+          "avatar_url": "https://myavatar.gothib.com/123432",
+          "comment_count": 45
+        },
+        {
+          "title": "It's not quite right here",
+          "topic": "feelings",
+          "author": "personable",
+          "body": "Text from the article..",
+          "created_at": 784875834759384893,
+          "votes": 9,
+          "avatar_url": "https://myavatar.gothib.com/1343432",
+          "comment_count": 12
         }
       ]
     }
@@ -35,13 +79,94 @@
           "title": "coding",
           "author": "bigboygump",
           "body": "I like coding",
-          "created_at": 198783284593543
+          "created_at": 198783284593543,
+          "votes": 2,
+          "avatar_url": "https://myavatar.gothib.com/123432",
+          "comment_count": 12
         }
       ]
     }
+  },
+  "GET api/articles/:article_id/comments": {
+    "description": "serves an array of all comments associated with the article_id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 89,
+          "body": "I have opinions",
+          "article_id": 1,
+          "author": "cooljmessy",
+          "votes": 2,
+          "created_at": "12978453090"
+        },
+        {
+          "comment_id": 65,
+          "body": "more opinions",
+          "article_id": 1,
+          "author": "cooljmessy",
+          "votes": 8,
+          "created_at": "12322253090"
+        },
+        {
+          "comment_id": 34,
+          "body": "this is what I have to say",
+          "article_id": 1,
+          "author": "cooljmessy",
+          "votes": 0,
+          "created_at": "17668453090"
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "increases, or decreases, the votes property of a specific article",
+    "exampleResponse": {
+      "before": {
+        "article_id": 1,
+        "title": "coding",
+        "author": "bigboygump",
+        "body": "I like coding",
+        "created_at": 198783284593543,
+        "votes": 2,
+        "avatar_url": "https://myavatar.gothib.com/123432",
+        "comment_count": 12
+      },
+      "after": {
+        "article_id": 1,
+        "title": "coding",
+        "author": "bigboygump",
+        "body": "I like coding",
+        "created_at": 198783284593543,
+        "votes": 102,
+        "avatar_url": "https://myavatar.gothib.com/123432",
+        "comment_count": 12
+      }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a new comment to the specified article",
+    "exampleResponse": {
+      "comment_id": 101,
+      "body": "my first ever comment",
+      "article_id": 1,
+      "author": "newguy123",
+      "votes": 0,
+      "created_at": "234567654333"
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes an existing comment by comment_id",
+    "exampleResponse": {
+      "before": {
+        "comment_id": 101,
+        "body": "my first ever comment",
+        "article_id": 1,
+        "author": "newguy123",
+        "votes": 0,
+        "created_at": "234567654333"
+      },
+      "after": "No comments exist with that comment ID"
+    }
   }
-  //PATCH article votes
-  //GET comments
-  //POST comments
-  //DELETE comments
 }

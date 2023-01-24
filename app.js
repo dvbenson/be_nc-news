@@ -7,6 +7,7 @@ const {
   getUsers,
   postComments,
   searchComments,
+  getAllEndPoints,
 } = require("./controllers/controller.js");
 const db = require("./db/connection");
 const express = require("express");
@@ -14,7 +15,7 @@ const app = express();
 
 app.use(express.json());
 
-//app.get("/api", getAllEndPoints);
+app.get("/api", getAllEndPoints);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);

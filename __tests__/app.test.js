@@ -13,6 +13,12 @@ afterAll(() => {
   db.end();
 });
 
+describe("GET: /api", () => {
+  test("200: responds with correct status code", () => {
+    return request(app).get("/api").expect(200);
+  });
+});
+
 describe("GET: /api/users", () => {
   test("200: responds with an array of objects, with the specified properties", () => {
     return request(app)
