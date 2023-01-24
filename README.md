@@ -57,7 +57,7 @@ _Follow the below instructions to get yourself started._
 In your terminal, create a directory to clone the repository into:
 
 ```
-$ mkdir < your new directory name>
+$ mkdir <your new directory name>
 ```
 
 Change directory:
