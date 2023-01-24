@@ -35,7 +35,7 @@ Users are able to access and interact with news data using the following **endpo
 
 - **DELETE** a comment
 
-## **Hosted Version**
+### **Hosted Version**
 
 ---
 
