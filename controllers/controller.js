@@ -54,20 +54,20 @@ const getArticleById = (request, response, next) => {
     });
 };
 // move checkId and checkNewComment to model
-const postComments = (request, response, next) => {
-  const { article_id: articleId } = request.params;
-  const newComment = request.body;
-  return Promise.all([checkArticleId(articleId), checkNewComment(newComment)])
-    .then((postComment) => {
-      return addNewComment(postComment[0], postComment[1]);
-    })
-    .then((results) => {
-      response.status(201).send(results);
-    })
-    .catch((error) => {
-      next(error);
-    });
-};
+// const postComments = (request, response, next) => {
+//   const { article_id: articleId } = request.params;
+//   const newComment = request.body;
+//   return Promise.all([checkArticleId(articleId), checkNewComment(newComment)])
+//     .then((postComment) => {
+//       return addNewComment(postComment[0], postComment[1]);
+//     })
+//     .then((results) => {
+//       response.status(201).send(results);
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// };
 
 const getArticleComments = (request, response, next) => {
   const { article_id } = request.params;
@@ -78,19 +78,19 @@ const getArticleComments = (request, response, next) => {
     .catch(next);
 };
 
-const patchArticleVotes = (request, response, next) => {
-  const { article_id: articleId } = request.params;
-  const votes = request.body;
+// const patchArticleVotes = (request, response, next) => {
+//   const { article_id: articleId } = request.params;
+//   const votes = request.body;
 
-  return Promise.all([checkArticleId(articleId), checkVotes(votes)])
-    .then((checkedVotes) => {
-      return updateArticleVotes(checkedVotes[0], checkedVotes[1]);
-    })
-    .then((results) => {
-      response.status(200).send(results);
-    })
-    .catch(next);
-};
+//   return Promise.all([checkArticleId(articleId), checkVotes(votes)])
+//     .then((checkedVotes) => {
+//       return updateArticleVotes(checkedVotes[0], checkedVotes[1]);
+//     })
+//     .then((results) => {
+//       response.status(200).send(results);
+//     })
+//     .catch(next);
+// };
 
 const getUsers = (request, response, next) => {
   fetchUsers()
@@ -125,9 +125,9 @@ module.exports = {
   getArticleComments,
   getArticleById,
   getUsers,
-  postComments,
+  // postComments,
   getArticleById,
-  patchArticleVotes,
+  // patchArticleVotes,
   searchComments,
   getAllEndPoints,
 };

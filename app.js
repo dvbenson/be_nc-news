@@ -3,9 +3,9 @@ const {
   getArticles,
   getArticleComments,
   getArticleById,
-  patchArticleVotes,
+  // patchArticleVotes,
   getUsers,
-  postComments,
+  // postComments,
   searchComments,
   getAllEndPoints,
 } = require("./controllers/controller.js");
@@ -21,8 +21,8 @@ app.get("/api/articles", getArticles); //good
 app.get("/api/articles/:article_id", getArticleById); //good
 app.get("/api/users", getUsers); //good
 app.get("/api/articles/:article_id/comments", getArticleComments); //good
-app.patch("/api/articles/:article_id", patchArticleVotes); // "msg": "The request body must be structured as follows: { inc_votes: number_of_votes }"
-app.post("/api/articles/:article_id/comments", postComments); // msg: invalid comment format
+// app.patch("/api/articles/:article_id", patchArticleVotes); // "msg": "The request body must be structured as follows: { inc_votes: number_of_votes }"
+// app.post("/api/articles/:article_id/comments", postComments); // msg: invalid comment format
 app.delete("/api/comments/:comment_id", searchComments); //good
 
 app.use((error, request, response, next) => {

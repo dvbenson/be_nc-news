@@ -81,19 +81,19 @@ const fetchArticleById = (article_id) => {
   });
 };
 //move checkId and checkNewComment to here
-const addNewComment = (articleId, newComment) => {
-  return db
-    .query(
-      `INSERT INTO comments
-    (author, article_id, body)
-    VALUES ($1, $2, $3)
-    RETURNING *;`,
-      [newComment.username, articleId, newComment.body]
-    )
-    .then((result) => {
-      return result.rows[0];
-    });
-};
+// const addNewComment = (articleId, newComment) => {
+//   return db
+//     .query(
+//       `INSERT INTO comments
+//     (author, article_id, body)
+//     VALUES ($1, $2, $3)
+//     RETURNING *;`,
+//       [newComment.username, articleId, newComment.body]
+//     )
+//     .then((result) => {
+//       return result.rows[0];
+//     });
+// };
 
 const fetchArticleComments = (article_id) => {
   const queryStr = format(`
@@ -115,37 +115,37 @@ const fetchArticleComments = (article_id) => {
   });
 };
 
-const updateArticleVotes = (articleId, votes) => {
-  if (votes.inc_votes < 0) {
-    let newVoteNum = Math.abs(votes.inc_votes);
-    return db
-      .query(
-        `
-    UPDATE articles
-    SET votes = votes - $1
-    WHERE article_id = $2
-    RETURNING *;`,
-        [newVoteNum, articleId]
-      )
-      .then((result) => {
-        return result.rows[0];
-      });
-  } else if (votes.inc_votes > 0) {
-    return db
-      .query(
-        `
-    UPDATE articles
-    SET votes = votes + $1
-    WHERE article_id = $2
-    RETURNING *;
-    `,
-        [votes.inc_votes, articleId]
-      )
-      .then((result) => {
-        return result.rows[0];
-      });
-  }
-};
+// const updateArticleVotes = (articleId, votes) => {
+//   if (votes.inc_votes < 0) {
+//     let newVoteNum = Math.abs(votes.inc_votes);
+//     return db
+//       .query(
+//         `
+//     UPDATE articles
+//     SET votes = votes - $1
+//     WHERE article_id = $2
+//     RETURNING *;`,
+//         [newVoteNum, articleId]
+//       )
+//       .then((result) => {
+//         return result.rows[0];
+//       });
+//   } else if (votes.inc_votes > 0) {
+//     return db
+//       .query(
+//         `
+//     UPDATE articles
+//     SET votes = votes + $1
+//     WHERE article_id = $2
+//     RETURNING *;
+//     `,
+//         [votes.inc_votes, articleId]
+//       )
+//       .then((result) => {
+//         return result.rows[0];
+//       });
+//   }
+// };
 
 const fetchUsers = () => {
   const queryStr = format(`
@@ -178,10 +178,10 @@ module.exports = {
   fetchArticles,
   fetchArticleById,
   fetchUsers,
-  addNewComment,
+  // addNewComment,
   checkArticleId,
   checkNewComment,
   fetchArticleComments,
-  updateArticleVotes,
+  // updateArticleVotes,
   deleteComments,
 };

@@ -150,23 +150,23 @@ describe("checkVotes", () => {
   });
 });
 
-describe("checkNewComment", () => {
-  test("returns an object when requirements met", () => {
-    const input = { username: "bob", body: "im bob" };
-    expect(typeof checkNewComment(input)).toBe("object");
-  });
-  test("checks if newComment has required properties, returns if true", () => {
-    const input = { username: "bob", body: "im bob" };
-    expect(checkNewComment(input)).toBe(input);
-  });
-  test("checks if newComment has required properties, rejects if false", () => {
-    const input = { firstname: "bob", secondname: "henry" };
-    expect(checkNewComment(input)).rejects.toEqual({
-      status: 400,
-      msg: "Invalid Comment Format",
-    });
-  });
-});
+// describe("checkNewComment", () => {
+//   test("returns an object when requirements met", () => {
+//     const input = { username: "bob", body: "im bob" };
+//     expect(typeof checkNewComment(input)).toBe("object");
+//   });
+//   test("checks if newComment has required properties, returns if true", () => {
+//     const input = { username: "bob", body: "im bob" };
+//     expect(checkNewComment(input)).toBe(input);
+//   });
+//   test("checks if newComment has required properties, rejects if false", () => {
+//     const input = { firstname: "bob", secondname: "henry" };
+//     expect(checkNewComment(input)).rejects.toEqual({
+//       status: 400,
+//       msg: "Invalid Comment Format",
+//     });
+//   });
+// });
 
 describe("checkArticleId", () => {
   test("only validates numbers", () => {
