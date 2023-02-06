@@ -12,9 +12,9 @@ const {
 const db = require("./db/connection");
 const express = require("express");
 const app = express();
-const cors = require("cors");
+const cors = require("cors"); // <-------CORS
 
-app.use(cors());
+app.use(cors()); // <--------CORS
 
 app.use(express.json());
 
