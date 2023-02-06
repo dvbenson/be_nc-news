@@ -1,8 +1,12 @@
 # **Northcoders News API**
 
-## **Project Overview**
+<div id="user-content-toc">
+  <ul>
+    <summary><h2 style="display: inline-block;">Project Overview</h1></summary>
+  </ul>
+</div>
 
----
+-------
 
 This JavaScript project uses **_Express.js_** with **_PostgreSQL_** as a database to demonstrate a **RESTful** API. It was created as part of a one-week solo sprint during my time as a student on Northcoders' full-stack Software Development bootcamp.
 
@@ -11,9 +15,14 @@ Although its original design has been for use with a news website, it has the ve
 The API will also form the backend of a frontend project built with **_React.js_**. Its functionality covers managing news articles, users and comments. The user is able to
 post, update and delete articles and comments - as well as vote/downvote on articles and comments as seen on sites such as Reddit.
 
----
 
-## **API Endpoints**
+<div id="user-content-toc">
+  <ul>
+    <summary><h2 style="display: inline-block;">API Endpoints</h1></summary>
+  </ul>
+</div>
+
+---
 
 Users are able to access and interact with news data using the following **endpoints**:
 
@@ -37,27 +46,27 @@ Users are able to access and interact with news data using the following **endpo
 
 ## **Hosted Version**
 
----
+
 
 Here is a live version of this app, hosted with [Render.](https://badsauce-webservices.onrender.com)
 
 ## **Setup**
 
----
+
 
 _Follow the below instructions to get yourself started._
 
-### **Installation and Minimum Requirements:**
+## **Installation and Minimum Requirements:**
 
 - **Node.js:** 19.0.0 or later
 - **PostgreSQL:** 12.12 or later
 
-### **Cloning the respository:**
+## **Cloning the respository:**
 
 In your terminal, create a directory to clone the repository into:
 
 ```
-$ mkdir < your new directory name>
+$ mkdir <your new directory name>
 ```
 
 Change directory:
@@ -72,9 +81,9 @@ Clone the repository:
 $ git clone https://github.com/dvbenson/Project1_news_api.git
 ```
 
-### **Dependencies:**
+## **Dependencies:**
 
----
+
 
 Run the below code in your terminal to install all required dependencies:
 
@@ -82,7 +91,7 @@ Run the below code in your terminal to install all required dependencies:
 $ npm install
 ```
 
-### **Dev & Test Environments:**
+## **Dev & Test Environments:**
 
 Create two .env files:
 
@@ -103,7 +112,7 @@ Your `.env.test` file must contain the following line:
 PGDATABASE=nc_news_test
 ```
 
-### **Database setup and seeding**
+## **Database setup and seeding**
 
 To setup both your development and test databases, run the following scripts:
 
@@ -119,7 +128,7 @@ Seeding:
 $ npm run seed
 ```
 
-### **Testing**
+## **Testing**
 
 The jest test suite is utilised for this app. Tests can be run with
 the following script:
@@ -128,9 +137,15 @@ the following script:
 $ npm test
 ```
 
----
 
-## **Full list of Dependencies:**
+<div id="user-content-toc">
+  <ul>
+    <summary><h2 style="display: inline-block;">Full List of Dependencies</h1></summary>
+  </ul>
+</div>
+
+-----
+
 
 The following Node.js packages are required for this project:
 
