@@ -12,9 +12,12 @@ const {
 const db = require("./db/connection");
 const express = require("express");
 const app = express();
+const cors = require("cors");
+
+app.use(cors());
 
 app.use(express.json());
-console.log("test deploy");
+
 app.get("/api", getAllEndPoints); //good
 app.get("/api/topics", getTopics); //good
 app.get("/api/articles", getArticles); //good
