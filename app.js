@@ -3,9 +3,9 @@ const {
   getArticles,
   getArticleComments,
   getArticleById,
-  // patchArticleVotes,
+  patchArticleVotes,
   getUsers,
-  // postComments,
+  postComments,
   searchComments,
   getAllEndPoints,
 } = require("./controllers/controller.js");
@@ -18,15 +18,15 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get("/api", getAllEndPoints); //good
-app.get("/api/topics", getTopics); //good
-app.get("/api/articles", getArticles); //good
-app.get("/api/articles/:article_id", getArticleById); //good
-app.get("/api/users", getUsers); //good
-app.get("/api/articles/:article_id/comments", getArticleComments); //good
-// app.patch("/api/articles/:article_id", patchArticleVotes); // "msg": "The request body must be structured as follows: { inc_votes: number_of_votes }"
-// app.post("/api/articles/:article_id/comments", postComments); // msg: invalid comment format
-app.delete("/api/comments/:comment_id", searchComments); //good
+app.get("/api", getAllEndPoints);
+app.get("/api/topics", getTopics);
+app.get("/api/articles", getArticles);
+app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/users", getUsers);
+app.get("/api/articles/:article_id/comments", getArticleComments);
+app.patch("/api/articles/:article_id", patchArticleVotes); // failing insomnia, rewrite tests
+app.post("/api/articles/:article_id/comments", postComments); // failing insomnia, rewrite tests
+app.delete("/api/comments/:comment_id", searchComments);
 
 app.use((error, request, response, next) => {
   if (error.status && error.msg) {

@@ -24,17 +24,20 @@ exports.formatComments = (comments, idLookup) => {
   });
 };
 
-exports.checkArticleId = (articleId) => {
-  if (/[^\d]/g.test(articleId)) {
+exports.checkArticleId = (article_id) => {
+  //console.log(article_id, "<---entering");
+  if (/[^\d]/g.test(article_id)) {
     return Promise.reject({
       status: 400,
       msg: `Invalid Article ID: please try again`,
     });
   }
-  return articleId;
+  //console.log(article_id, "<---returning");
+  return article_id;
 };
 
 exports.checkNewComment = (newComment) => {
+  //console.log(newComment, "<---- entering");
   if (
     !newComment.hasOwnProperty("username") &&
     !newComment.hasOwnProperty("body")
@@ -44,11 +47,13 @@ exports.checkNewComment = (newComment) => {
       msg: "Invalid Comment Format",
     });
   } else {
+    //console.log(newComment, "<---- returning");
     return newComment;
   }
 };
 
 exports.checkVotes = (votes) => {
+  //console.log(votes, "<--- entered");
   if (!votes.inc_votes) {
     return Promise.reject({
       status: 400,
@@ -57,7 +62,7 @@ exports.checkVotes = (votes) => {
   } else if (!Number.isInteger(votes.inc_votes)) {
     return Promise.reject({
       status: 422,
-      msg: "Votes must be an number!",
+      msg: "Votes must be a number!",
     });
   } else if (Object.keys(votes).length > 1) {
     return Promise.reject({
@@ -65,6 +70,7 @@ exports.checkVotes = (votes) => {
       msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
     });
   }
+  //console.log(votes, "<--- returned");
   return votes;
 };
 

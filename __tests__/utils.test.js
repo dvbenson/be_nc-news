@@ -115,16 +115,12 @@ describe("formatComments", () => {
 });
 
 describe("checkVotes", () => {
-  test("returns an object when validated", () => {
-    const testVote = { inc_votes: 5 };
-
-    expect(typeof checkVotes(testVote)).toEqual("object");
-  });
   test("returns the votes object when it meets validation criteria", () => {
     const testVote = { inc_votes: 5 };
 
     expect(checkVotes(testVote)).toEqual({ inc_votes: 5 });
   });
+
   test("rejects the votes object if it doesn't have the inc_votes property", () => {
     const testVote = { lots_of_votes: 1234 };
 
@@ -133,12 +129,12 @@ describe("checkVotes", () => {
       msg: "The request body must be structured as follows: { inc_votes: number_of_votes }",
     });
   });
-  test("rejects the votes object if it doesn't have the a number for a value", () => {
+  test("rejects the votes object if it doesn't have a number for a value", () => {
     const testVote = { inc_votes: "String" };
 
     expect(checkVotes(testVote)).rejects.toEqual({
       status: 422,
-      msg: "Votes must be an number!",
+      msg: "Votes must be a number!",
     });
   });
   test("rejects the votes object if it doesn't have the correct amount of properties", () => {
@@ -150,23 +146,23 @@ describe("checkVotes", () => {
   });
 });
 
-// describe("checkNewComment", () => {
-//   test("returns an object when requirements met", () => {
-//     const input = { username: "bob", body: "im bob" };
-//     expect(typeof checkNewComment(input)).toBe("object");
-//   });
-//   test("checks if newComment has required properties, returns if true", () => {
-//     const input = { username: "bob", body: "im bob" };
-//     expect(checkNewComment(input)).toBe(input);
-//   });
-//   test("checks if newComment has required properties, rejects if false", () => {
-//     const input = { firstname: "bob", secondname: "henry" };
-//     expect(checkNewComment(input)).rejects.toEqual({
-//       status: 400,
-//       msg: "Invalid Comment Format",
-//     });
-//   });
-// });
+describe("checkNewComment", () => {
+  test("returns an object when requirements met", () => {
+    const input = { username: "bob", body: "im bob" };
+    expect(typeof checkNewComment(input)).toBe("object");
+  });
+  test("checks if newComment has required properties, returns if true", () => {
+    const input = { username: "bob", body: "im bob" };
+    expect(checkNewComment(input)).toBe(input);
+  });
+  test("checks if newComment has required properties, rejects if false", () => {
+    const input = { firstname: "bob", secondname: "henry" };
+    expect(checkNewComment(input)).rejects.toEqual({
+      status: 400,
+      msg: "Invalid Comment Format",
+    });
+  });
+});
 
 describe("checkArticleId", () => {
   test("only validates numbers", () => {

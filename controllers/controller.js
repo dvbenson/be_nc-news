@@ -9,12 +9,7 @@ const {
   updateArticleVotes,
   deleteComments,
 } = require("../models/model.js");
-const {
-  checkArticleId,
-  checkNewComment,
-  checkOrder,
-  checkVotes,
-} = require("../db/seeds/utils.js");
+
 const allEndPoints = require("../endpoints.json");
 
 const getAllEndPoints = (request, response, next) => {
@@ -53,21 +48,20 @@ const getArticleById = (request, response, next) => {
       next(error);
     });
 };
-// move checkId and checkNewComment to model
-// const postComments = (request, response, next) => {
-//   const { article_id: articleId } = request.params;
-//   const newComment = request.body;
-//   return Promise.all([checkArticleId(articleId), checkNewComment(newComment)])
-//     .then((postComment) => {
-//       return addNewComment(postComment[0], postComment[1]);
-//     })
-//     .then((results) => {
-//       response.status(201).send(results);
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// };
+
+const postComments = (request, response, next) => {
+  const { article_id } = request.params;
+  const newComment = request.body;
+
+  addNewComment(article_id, newComment)
+    .then((results) => {
+      response.status(201).send(results);
+    })
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
+};
 
 const getArticleComments = (request, response, next) => {
   const { article_id } = request.params;
@@ -78,19 +72,19 @@ const getArticleComments = (request, response, next) => {
     .catch(next);
 };
 
-// const patchArticleVotes = (request, response, next) => {
-//   const { article_id: articleId } = request.params;
-//   const votes = request.body;
+const patchArticleVotes = (request, response, next) => {
+  const { article_id } = request.params;
+  const votes = request.body;
 
-//   return Promise.all([checkArticleId(articleId), checkVotes(votes)])
-//     .then((checkedVotes) => {
-//       return updateArticleVotes(checkedVotes[0], checkedVotes[1]);
-//     })
-//     .then((results) => {
-//       response.status(200).send(results);
-//     })
-//     .catch(next);
-// };
+  updateArticleVotes(article_id, votes)
+    .then((results) => {
+      response.status(200).send(results);
+    })
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
+};
 
 const getUsers = (request, response, next) => {
   fetchUsers()
@@ -125,9 +119,9 @@ module.exports = {
   getArticleComments,
   getArticleById,
   getUsers,
-  // postComments,
+  postComments,
   getArticleById,
-  // patchArticleVotes,
+  patchArticleVotes,
   searchComments,
   getAllEndPoints,
 };
