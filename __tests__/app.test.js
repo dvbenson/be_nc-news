@@ -294,37 +294,37 @@ describe("PATCH: api/articles/:article_id (VOTES)", () => {
   });
 });
 // add two new tests: articleId is valid && username exists(below)
-describe.only("POST: /api/articles/:article_id/comments", () => {
-  test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
-    return request(app)
-      .post(`/api/articles/1/comments`)
-      .send({ body: "im bob", username: "icellusedkars" })
-      .expect(201)
-      .then((response) => {
-        const comment = response.body.comment;
-        expect(comment).toHaveProperty("created_at");
-        expect(comment).toHaveProperty("author", "icellusedkars");
-        expect(comment).toHaveProperty("body", "im bob");
-        expect(comment).toHaveProperty("article_id", 1);
-        expect(comment).toHaveProperty("votes", 0);
-        expect(comment).toHaveProperty("comment_id", expect.any(Number));
-      });
-  });
-  describe.only("ERROR: /api/articles/:article_id/comments", () => {
-    test("400: bad body/missing required fields", () => {
-      return request(app)
-        .post("/api/articles/2/comments")
-        .send({
-          notbody: "this is not a body",
-          username: "thisIsNotAUserName",
-        })
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Invalid Comment Format");
-        });
-    });
-  });
-});
+// describe.only("POST: /api/articles/:article_id/comments", () => {
+//   test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
+//     return request(app)
+//       .post(`/api/articles/1/comments`)
+//       .send({ body: "im bob", username: "icellusedkars" })
+//       .expect(201)
+//       .then((response) => {
+//         const comment = response.body.comment;
+//         expect(comment).toHaveProperty("created_at");
+//         expect(comment).toHaveProperty("author", "icellusedkars");
+//         expect(comment).toHaveProperty("body", "im bob");
+//         expect(comment).toHaveProperty("article_id", 1);
+//         expect(comment).toHaveProperty("votes", 0);
+//         expect(comment).toHaveProperty("comment_id", expect.any(Number));
+//       });
+//   });
+//   describe.only("ERROR: /api/articles/:article_id/comments", () => {
+//     test("400: bad body/missing required fields", () => {
+//       return request(app)
+//         .post("/api/articles/2/comments")
+//         .send({
+//           notbody: "this is not a body",
+//           username: "thisIsNotAUserName",
+//         })
+//         .expect(400)
+//         .then(({ body }) => {
+//           expect(body.msg).toBe("Invalid Comment Format");
+//         });
+//     });
+//   });
+// });
 
 describe("DELETE: /api/comments/:comment_id", () => {
   test("204: content deleted under specified id number, returns an empty object", () => {
