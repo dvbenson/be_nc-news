@@ -51,14 +51,18 @@ const getArticleById = (request, response, next) => {
 
 const postComments = (request, response, next) => {
   const { article_id } = request.params;
-  const newComment = request.body;
-
-  addNewComment(article_id, newComment)
+  const { body } = request.body;
+  const { username } = request.body;
+  // console.log(article_id, "<---entering controller");
+  // console.log(body, "<---entering controller");
+  // console.log(username, "<---entering controller");
+  addNewComment(article_id, body, username)
     .then((results) => {
+      console.log(results, "<---- leaving controller(fully processed)");
       response.status(201).send(results);
     })
     .catch((error) => {
-      console.log(error);
+      console.log(error, "<----rejected along the way of posting comment");
       next(error);
     });
 };

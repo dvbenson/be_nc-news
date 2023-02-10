@@ -1,4 +1,6 @@
 const db = require("../connection.js");
+const format = require("pg-format");
+const query = require("express");
 const { sort } = require("../data/test-data/articles.js");
 
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
@@ -83,3 +85,24 @@ exports.validateComment = (comment_id) => {
   }
   return comment_id;
 };
+
+// exports.checkUserExists = (username) => {
+//   let validUser = username;
+//   console.log(username, "<--- entering");
+//   if (username === "") {
+//     return Promise.reject({
+//       status: 400,
+//       msg: "Invalid UserName please try again",
+//     });
+//   }
+//   const queryStr = format(`SELECT * FROM users WHERE username = $1;`);
+//   return db.query(queryStr, [username]).then(({ rowCount, rows }) => {
+//     if (rowCount === 0) {
+//       return Promise.reject({
+//         status: 404,
+//         msg: "Username doesn't exist",
+//       });
+//     }
+//     return username;
+//   });
+// };

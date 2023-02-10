@@ -9,8 +9,8 @@ const {
   checkNewComment,
   checkVotes,
   validateComment,
+  checkUserExists,
 } = require("../db/seeds/utils.js");
-
 const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
@@ -83,22 +83,37 @@ const fetchArticleById = (article_id) => {
   });
 };
 
-const addNewComment = (article_id, newComment) => {
-  return Promise.all([
-    checkArticleId(article_id),
-    checkNewComment(newComment),
-  ]).then(([resultArticleId, resultNewComment]) => {
-    return db
-      .query(
-        `INSERT INTO comments
+const addNewComment = (article_id, body, username) => {
+  // console.log(article_id, "<---entering model");
+  // console.log(body, "<---entering model");
+  // console.log(username, "<---entering model");
+  const queryStr = format(`SELECT * FROM users WHERE username = $1;`);
+  return db.query(queryStr, [username]).then(({ rowCount, rows }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "Username doesn't exist",
+      });
+    }
+    return Promise.all([
+      checkArticleId(article_id),
+      checkNewComment(body),
+      username,
+    ]).then(([resultArticleId, resultBody, resultUserName]) => {
+      console.log(resultArticleId, "<---return promise model");
+      console.log(resultBody, "<---return promise model");
+      console.log(resultUserName, "<---return promise model");
+      const queryStr = format(`INSERT INTO comments
     (author, article_id, body)
     VALUES ($1, $2, $3)
-    RETURNING *;`,
-        [resultNewComment.username, resultArticleId, resultNewComment.body]
-      )
-      .then((result) => {
-        return result.rows[0];
-      });
+    RETURNING *;`);
+      console.log([resultUserName, resultArticleId, resultBody]);
+      return db
+        .query(queryStr, [resultUserName, resultArticleId, resultBody])
+        .then((result) => {
+          return result.rows[0];
+        });
+    });
   });
 };
 

@@ -294,7 +294,7 @@ describe("PATCH: api/articles/:article_id (VOTES)", () => {
   });
 });
 // add two new tests: articleId is valid && username exists(below)
-describe("POST: /api/articles/:article_id/comments", () => {
+describe.only("POST: /api/articles/:article_id/comments", () => {
   test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
     return request(app)
       .post(`/api/articles/1/comments`)
@@ -310,7 +310,7 @@ describe("POST: /api/articles/:article_id/comments", () => {
         expect(comment).toHaveProperty("comment_id", expect.any(Number));
       });
   });
-  describe("ERROR: /api/articles/:article_id/comments", () => {
+  describe.only("ERROR: /api/articles/:article_id/comments", () => {
     test("400: bad body/missing required fields", () => {
       return request(app)
         .post("/api/articles/2/comments")

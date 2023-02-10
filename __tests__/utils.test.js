@@ -5,12 +5,8 @@ const {
   checkArticleId,
   checkVotes,
   checkNewComment,
-  checkOrder,
-  checkSortBy,
-  checkTopic,
-  checkComments,
   validateComment,
-  checkCommentExists,
+  checkUserExists,
 } = require("../db/seeds/utils");
 
 const { deleteComments, fetchArticles } = require("../models/model.js");
@@ -198,3 +194,21 @@ describe("validateComment", () => {
     expect(validateComment(testId)).toBe(1);
   });
 });
+
+// describe.only("checkUserExists", () => {
+//   test("returns a string", () => {
+//     const testUser = "Barney123";
+
+//     expect(checkUserExists(testUser)).toEqual(testUser);
+//     expect(typeof checkUserExists(testUser)).toBe("string");
+//   });
+
+//   test("checks to see if the string is empty", () => {
+//     const testUser = "";
+
+//     expect(checkUserExists(testUser)).rejects.toEqual({
+//       status: 400,
+//       msg: "Invalid UserName please try again",
+//     });
+//   });
+// });
