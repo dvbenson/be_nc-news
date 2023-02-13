@@ -7,6 +7,7 @@ const {
 const {
   checkArticleId,
   checkNewComment,
+  checkVotes,
   validateComment,
 } = require("../db/seeds/utils.js");
 const db = require("../db/connection.js");
@@ -80,20 +81,40 @@ const fetchArticleById = (article_id) => {
     }
   });
 };
-//move checkId and checkNewComment to here
-// const addNewComment = (articleId, newComment) => {
-//   return db
-//     .query(
-//       `INSERT INTO comments
-//     (author, article_id, body)
-//     VALUES ($1, $2, $3)
-//     RETURNING *;`,
-//       [newComment.username, articleId, newComment.body]
-//     )
-//     .then((result) => {
-//       return result.rows[0];
-//     });
-// };
+
+const addNewComment = (article_id, newComment) => {
+  return Promise.all([
+    checkArticleId(article_id),
+    checkNewComment(newComment),
+  ]).then(([resultArticleId, resultBody]) => {
+    const queryStr = format(`SELECT * FROM users WHERE username = $1;`);
+    return db
+      .query(queryStr, [resultBody.username])
+      .then(({ rowCount, rows }) => {
+        if (rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "Username doesn't exist",
+          });
+        }
+
+        const queryStr = format(`INSERT INTO comments
+    (author, article_id, body)
+    VALUES ($1, $2, $3)
+    RETURNING *;`);
+
+        return db
+          .query(queryStr, [
+            resultBody.username,
+            resultArticleId,
+            resultBody.body,
+          ])
+          .then((result) => {
+            return result.rows[0];
+          });
+      });
+  });
+};
 
 const fetchArticleComments = (article_id) => {
   const queryStr = format(`
@@ -115,37 +136,41 @@ const fetchArticleComments = (article_id) => {
   });
 };
 
-// const updateArticleVotes = (articleId, votes) => {
-//   if (votes.inc_votes < 0) {
-//     let newVoteNum = Math.abs(votes.inc_votes);
-//     return db
-//       .query(
-//         `
-//     UPDATE articles
-//     SET votes = votes - $1
-//     WHERE article_id = $2
-//     RETURNING *;`,
-//         [newVoteNum, articleId]
-//       )
-//       .then((result) => {
-//         return result.rows[0];
-//       });
-//   } else if (votes.inc_votes > 0) {
-//     return db
-//       .query(
-//         `
-//     UPDATE articles
-//     SET votes = votes + $1
-//     WHERE article_id = $2
-//     RETURNING *;
-//     `,
-//         [votes.inc_votes, articleId]
-//       )
-//       .then((result) => {
-//         return result.rows[0];
-//       });
-//   }
-// };
+const updateArticleVotes = (article_id, votes) => {
+  return Promise.all([checkArticleId(article_id), checkVotes(votes)]).then(
+    ([checkedArticleId, checkedVotes]) => {
+      if (checkedVotes.inc_votes < 0) {
+        let newVoteNum = Math.abs(checkedVotes.inc_votes);
+        return db
+          .query(
+            `
+    UPDATE articles
+    SET votes = votes - $1
+    WHERE article_id = $2
+    RETURNING *;`,
+            [newVoteNum, checkedArticleId]
+          )
+          .then((result) => {
+            return result.rows[0];
+          });
+      } else {
+        return db
+          .query(
+            `
+      UPDATE articles
+      SET votes = votes + $1
+      WHERE article_id = $2
+      RETURNING *;
+      `,
+            [checkedVotes.inc_votes, checkedArticleId]
+          )
+          .then((result) => {
+            return result.rows[0];
+          });
+      }
+    }
+  );
+};
 
 const fetchUsers = () => {
   const queryStr = format(`
@@ -178,10 +203,10 @@ module.exports = {
   fetchArticles,
   fetchArticleById,
   fetchUsers,
-  // addNewComment,
+  addNewComment,
   checkArticleId,
   checkNewComment,
   fetchArticleComments,
-  // updateArticleVotes,
+  updateArticleVotes,
   deleteComments,
 };

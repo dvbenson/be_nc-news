@@ -227,105 +227,105 @@ describe("GET: /api/articles/:article_id/comments", () => {
 });
 
 // add two new tests: articleId is valid && username exists(below)
-// describe("PATCH: api/articles/:article_id (VOTES)", () => {
-//   test("200: request accepts an object that modifies the vote property in the database positively", () => {
-//     const articleId = 2;
-//     const votes = { inc_votes: 2 };
-//     return request(app)
-//       .patch(`/api/articles/${articleId}`)
-//       .send(votes)
-//       .expect(200)
-//       .then((response) => {
-//         expect(response.body).toBeInstanceOf(Object);
-//         expect(response.body.article_id).toBe(2);
-//         expect(response.body.votes).toBe(2);
-//         expect(response.body.updatedArticleInfo).not.toBe(
-//           testData.articleData[articleId - 1]
-//         );
-//       });
-//   });
-//   test("200: request accepts an object that modifies the vote property in the database negatively", () => {
-//     const articleId = 1;
-//     const votes = { inc_votes: -50 };
-//     return request(app)
-//       .patch(`/api/articles/${articleId}`)
-//       .send(votes)
-//       .expect(200)
-//       .then((response) => {
-//         expect(response.body).toBeInstanceOf(Object);
-//         expect(response.body.article_id).toBe(1);
-//         expect(response.body.votes).toBe(50);
-//         expect(response.body.updatedArticleInfo).not.toBe(
-//           testData.articleData[articleId - 1]
-//         );
-//       });
-//   });
-//   describe("ERROR: /api/articles/:article_id (VOTES)", () => {
-//     test("400: throws an error if request body does not have inc_votes property", () => {
-//       const articleId = 2;
-//       const newVote = { votes: 2 };
-//       return request(app)
-//         .patch(`/api/articles/${articleId}`)
-//         .send(newVote)
-//         .expect(400);
-//     });
-//     test("400: throws an error if request body is empty", () => {
-//       const articleId = 2;
-//       return request(app)
-//         .patch(`/api/articles/${articleId}`)
-//         .send()
-//         .expect(400);
-//     });
-//     test("422: throws an error if the value of inc_votes is invalid", () => {
-//       const articleId = 2;
-//       const newVote = { inc_votes: "string" };
-//       return request(app)
-//         .patch(`/api/articles/${articleId}`)
-//         .send(newVote)
-//         .expect(422);
-//     });
-//     test("422: throws an error if there is another property in the request body", () => {
-//       const articleId = 2;
-//       const newVote = { inc_votes: 2, name: "Doggo" };
-//       return request(app)
-//         .patch(`/api/articles/${articleId}`)
-//         .send(newVote)
-//         .expect(422);
-//     });
-//   });
-// });
+describe("PATCH: api/articles/:article_id (VOTES)", () => {
+  test("200: request accepts an object that modifies the vote property in the database positively", () => {
+    const articleId = 2;
+    const votes = { inc_votes: 2 };
+    return request(app)
+      .patch(`/api/articles/${articleId}`)
+      .send(votes)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body.article_id).toBe(2);
+        expect(response.body.votes).toBe(2);
+        expect(response.body.updatedArticleInfo).not.toBe(
+          testData.articleData[articleId - 1]
+        );
+      });
+  });
+  test("200: request accepts an object that modifies the vote property in the database negatively", () => {
+    const articleId = 1;
+    const votes = { inc_votes: -50 };
+    return request(app)
+      .patch(`/api/articles/${articleId}`)
+      .send(votes)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body.article_id).toBe(1);
+        expect(response.body.votes).toBe(50);
+        expect(response.body.updatedArticleInfo).not.toBe(
+          testData.articleData[articleId - 1]
+        );
+      });
+  });
+  describe("ERROR: /api/articles/:article_id (VOTES)", () => {
+    test("400: throws an error if request body does not have inc_votes property", () => {
+      const articleId = 2;
+      const newVote = { votes: 2 };
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send(newVote)
+        .expect(400);
+    });
+    test("400: throws an error if request body is empty", () => {
+      const articleId = 2;
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send()
+        .expect(400);
+    });
+    test("422: throws an error if the value of inc_votes is invalid", () => {
+      const articleId = 2;
+      const newVote = { inc_votes: "string" };
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send(newVote)
+        .expect(422);
+    });
+    test("422: throws an error if there is another property in the request body", () => {
+      const articleId = 2;
+      const newVote = { inc_votes: 2, name: "Doggo" };
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send(newVote)
+        .expect(422);
+    });
+  });
+});
 
-// describe("POST: /api/articles/:article_id/comments", () => {
-//   test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
-//     const articleId = 1;
-//     const newComment = { username: "icellusedkars", body: "im bob" };
-//     return request(app)
-//       .post(`/api/articles/${articleId}/comments`)
-//       .send(newComment)
-//       .expect(201)
-//       .then((response) => {
-//         expect(response.body).toBeInstanceOf(Object);
-//         expect(response.body).toMatchObject({
-//           comment_id: expect.any(Number),
-//           body: newComment.body,
-//           article_id: articleId,
-//           author: newComment.username,
-//           votes: 0,
-//           created_at: expect.any(String),
-//         });
-//       });
-//   });
-//   describe("ERROR: /api/articles/:article_id/comments", () => {
-//     test("400: bad body/missing required fields", () => {
-//       return request(app)
-//         .post("/api/articles/1/comments")
-//         .expect(400)
-//         .then(({ body }) => {
-//           expect(body.msg).toBe("Invalid Comment Format");
-//         });
-//     });
-//   });
-// });
+describe("POST: /api/articles/:article_id/comments", () => {
+  test("201: request accepts an object with username and body properties, responds with the posted comment", () => {
+    const articleId = 1;
+    const newComment = { username: "icellusedkars", body: "im bob" };
+    return request(app)
+      .post(`/api/articles/${articleId}/comments`)
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body).toMatchObject({
+          comment_id: expect.any(Number),
+          body: newComment.body,
+          article_id: articleId,
+          author: newComment.username,
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  describe("ERROR: /api/articles/:article_id/comments", () => {
+    test("400: bad body/missing required fields", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid Comment Format");
+        });
+    });
+  });
+});
 
 describe("DELETE: /api/comments/:comment_id", () => {
   test("204: content deleted under specified id number, returns an empty object", () => {

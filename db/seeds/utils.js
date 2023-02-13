@@ -1,5 +1,5 @@
-const db = require("../connection.js");
-const { sort } = require("../data/test-data/articles.js");
+// const db = require("../connection.js");
+// const { sort } = require("../data/test-data/articles.js");
 
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
@@ -24,14 +24,14 @@ exports.formatComments = (comments, idLookup) => {
   });
 };
 
-exports.checkArticleId = (articleId) => {
-  if (/[^\d]/g.test(articleId)) {
+exports.checkArticleId = (article_id) => {
+  if (/[^\d]/g.test(article_id)) {
     return Promise.reject({
       status: 400,
       msg: `Invalid Article ID: please try again`,
     });
   }
-  return articleId;
+  return article_id;
 };
 
 exports.checkNewComment = (newComment) => {
