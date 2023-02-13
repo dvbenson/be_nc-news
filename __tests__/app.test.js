@@ -225,7 +225,6 @@ describe("GET: /api/articles/:article_id/comments", () => {
     });
   });
 });
-
 // add two new tests: articleId is valid && username exists(below)
 describe("PATCH: api/articles/:article_id (VOTES)", () => {
   test("200: request accepts an object that modifies the vote property in the database positively", () => {
