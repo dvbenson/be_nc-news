@@ -36,6 +36,45 @@ describe("GET: /api/users", () => {
   });
 });
 
+describe("GET: /api/users/:username", () => {
+  test("200: responds with an object, with the specified properties", () => {
+    const testUserName = "icellusedkars";
+    return request(app)
+      .get(`/api/users/${testUserName}`)
+      .expect(200)
+      .then((response) => {
+        const testUser = response.body;
+        expect(Object.keys(testUser).length).toBe(3);
+        expect(testUser).toHaveProperty("username", testUserName);
+        expect(testUser).toHaveProperty("name", expect.any(String));
+        expect(testUser).toHaveProperty("avatar_url", expect.any(String));
+        expect(typeof testUser).toBe("object");
+      });
+  });
+});
+
+describe("ERROR: /api/users/:username", () => {
+  test("404: returns an error for a username that doesn't exist", () => {
+    const testUserName = "jeffroray";
+    return request(app)
+      .get(`/api/users/${testUserName}`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Username not found");
+      });
+  });
+
+  // test("400: returns an error for a username that doesn't exist", () => {
+  //   const testUserName = "jeffroray";
+  //   return request(app)
+  //   .get(`/api/users/${testUserName}`)
+  //   .expect(404)
+  //   .then(({body}) => {
+  //     expect(body.msg).toBe("Username not found")
+  //   })
+  // })
+});
+
 describe("GET: /api/topics", () => {
   test("200: responds with array of topic objects, each with the properties 'slug' and 'description'", () => {
     return request(app)

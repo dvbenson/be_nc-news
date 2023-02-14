@@ -16,3 +16,19 @@ exports.fetchUsers = () => {
     }
   });
 };
+
+exports.fetchUserById = (username) => {
+  const queryStr = format(`
+  SELECT * 
+  FROM users
+  WHERE username = $1;`);
+
+  return db.query(queryStr, [username]).then(({ rowCount, rows }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, msg: "Username not found" });
+    } else {
+      console.log(rows);
+      return rows[0];
+    }
+  });
+};
