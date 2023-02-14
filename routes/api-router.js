@@ -1,4 +1,4 @@
-const { getAllEndPoints } = require("../controllers/controller");
+const { getAllEndPoints } = require("../controllers/api-controllers");
 const apiRouter = require("express").Router();
 
 apiRouter.get("/", (req, res) => {
