@@ -1,52 +1,26 @@
-const {
-  getTopics,
-  getArticles,
-  getArticleComments,
-  getArticleById,
-  patchArticleVotes,
-  getUsers,
-  postComments,
-  searchComments,
-  getAllEndPoints,
-} = require("./controllers/controller.js");
-const db = require("./db/connection");
+const { postgresErrors, customErrors, internalErrors } = require("./errors");
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
 
-app.use(cors());
+const apiRouter = require("./routes/api-router");
+const articlesRouter = require("./routes/articles-router");
+const usersRouter = require("./routes/users-router");
+const topicsRouter = require("./routes/topics-router");
+const commentsRouter = require("./routes/comments-router");
 
+app.use(cors());
 app.use(express.json());
 
-app.get("/api", getAllEndPoints);
-app.get("/api/topics", getTopics);
-app.get("/api/articles", getArticles);
-app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/users", getUsers);
-app.get("/api/articles/:article_id/comments", getArticleComments);
-app.patch("/api/articles/:article_id", patchArticleVotes);
-app.post("/api/articles/:article_id/comments", postComments);
-app.delete("/api/comments/:comment_id", searchComments);
+app.use("/api", apiRouter);
+app.use(articlesRouter);
+app.use(topicsRouter);
+app.use(usersRouter);
+app.use(commentsRouter);
 
-app.use((error, request, response, next) => {
-  if (error.status && error.msg) {
-    response.status(error.status).send({ msg: error.msg });
-  } else {
-    next(error);
-  }
-});
-
-app.use((error, request, response, next) => {
-  if (error.code === "22P02") {
-    response.status(400).send({ msg: "Bad Request" });
-  } else {
-    next(error);
-  }
-});
-
-app.use((error, request, response, next) => {
-  console.log(error);
-  response.status(500).send({ msg: "Internal Server Error" });
-});
+app.use(customErrors);
+app.use(postgresErrors);
+app.use(internalErrors);
 
 module.exports = app;
