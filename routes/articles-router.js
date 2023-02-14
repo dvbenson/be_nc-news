@@ -4,7 +4,7 @@ const {
   getArticleById,
   patchArticleVotes,
   postComments,
-} = require("../controllers/controller");
+} = require("../controllers/articles-controllers");
 const articlesRouter = require("express").Router();
 
 articlesRouter.get("/api/articles", getArticles);

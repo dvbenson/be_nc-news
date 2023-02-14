@@ -5,15 +5,11 @@ const {
   checkArticleId,
   checkVotes,
   checkNewComment,
-  checkOrder,
-  checkSortBy,
-  checkTopic,
-  checkComments,
   validateComment,
-  checkCommentExists,
 } = require("../db/seeds/utils");
 
-const { deleteComments, fetchArticles } = require("../models/model.js");
+const { deleteComments } = require("../models/comments-models.js");
+const { fetchArticles } = require("../models/articles-models.js");
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
