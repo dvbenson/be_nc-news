@@ -1,6 +1,11 @@
-const { searchComments } = require("../controllers/comments-controllers");
-const topicsRouter = require("express").Router();
+const {
+  searchComments,
+  patchCommentVotes,
+} = require("../controllers/comments-controllers");
+const commentsRouter = require("express").Router();
 
-topicsRouter.delete("/api/comments/:comment_id", searchComments);
+commentsRouter.patch("/api/comments/:comment_id", patchCommentVotes);
 
-module.exports = topicsRouter;
+commentsRouter.delete("/api/comments/:comment_id", searchComments);
+
+module.exports = commentsRouter;

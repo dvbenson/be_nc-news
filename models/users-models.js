@@ -27,7 +27,6 @@ exports.fetchUserById = (username) => {
     if (rowCount === 0) {
       return Promise.reject({ status: 404, msg: "Username not found" });
     } else {
-      console.log(rows);
       return rows[0];
     }
   });

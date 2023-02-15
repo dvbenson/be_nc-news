@@ -63,16 +63,6 @@ describe("ERROR: /api/users/:username", () => {
         expect(body.msg).toBe("Username not found");
       });
   });
-
-  // test("400: returns an error for a username that doesn't exist", () => {
-  //   const testUserName = "jeffroray";
-  //   return request(app)
-  //   .get(`/api/users/${testUserName}`)
-  //   .expect(404)
-  //   .then(({body}) => {
-  //     expect(body.msg).toBe("Username not found")
-  //   })
-  // })
 });
 
 describe("GET: /api/topics", () => {
@@ -327,6 +317,74 @@ describe("PATCH: api/articles/:article_id (VOTES)", () => {
       const newVote = { inc_votes: 2, name: "Doggo" };
       return request(app)
         .patch(`/api/articles/${articleId}`)
+        .send(newVote)
+        .expect(422);
+    });
+  });
+});
+
+describe.only("PATCH: api/comments/:comment_id (VOTES)", () => {
+  test("200: request accepts an object that modifies the vote property in the database positively", () => {
+    const comment_id = 1;
+    const votes = { inc_votes: 5 };
+    return request(app)
+      .patch(`/api/comments/${comment_id}`)
+      .send(votes)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body.comment_id).toBe(1);
+        expect(response.body.votes).toBe(21);
+        expect(response.body.updatedCommentInfo).not.toBe(
+          testData.commentData[comment_id - 1]
+        );
+      });
+  });
+  test("200: request accepts an object that modifies the vote property in the database negatively", () => {
+    const comment_id = 1;
+    const votes = { inc_votes: -5 };
+    return request(app)
+      .patch(`/api/comments/${comment_id}`)
+      .send(votes)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body.comment_id).toBe(1);
+        expect(response.body.votes).toBe(11);
+        expect(response.body.updatedCommentInfo).not.toBe(
+          testData.commentData[comment_id - 1]
+        );
+      });
+  });
+  describe.only("ERROR: /api/comments/:comment_id (VOTES)", () => {
+    test("400: throws an error if request body does not have inc_votes property", () => {
+      const comment_id = 2;
+      const newVote = { votes: 2 };
+      return request(app)
+        .patch(`/api/comments/${comment_id}`)
+        .send(newVote)
+        .expect(400);
+    });
+    test("400: throws an error if request body is empty", () => {
+      const comment_id = 2;
+      return request(app)
+        .patch(`/api/comments/${comment_id}`)
+        .send()
+        .expect(400);
+    });
+    test("422: throws an error if the value of inc_votes is invalid", () => {
+      const comment_id = 2;
+      const newVote = { inc_votes: "string" };
+      return request(app)
+        .patch(`/api/comments/${comment_id}`)
+        .send(newVote)
+        .expect(422);
+    });
+    test("422: throws an error if there is another property in the request body", () => {
+      const comment_id = 2;
+      const newVote = { inc_votes: 2, name: "Doggo" };
+      return request(app)
+        .patch(`/api/comments/${comment_id}`)
         .send(newVote)
         .expect(422);
     });

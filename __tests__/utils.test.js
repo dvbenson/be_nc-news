@@ -110,7 +110,7 @@ describe("formatComments", () => {
   });
 });
 
-describe("checkVotes", () => {
+describe.only("checkVotes", () => {
   test("returns an object when validated", () => {
     const testVote = { inc_votes: 5 };
 
@@ -185,7 +185,7 @@ describe("checkArticleId", () => {
   });
 });
 
-describe("validateComment", () => {
+describe.only("validateComment", () => {
   test("rejects the comment_id if it is passed a value that isn't a number", () => {
     const testId = "string";
     expect(validateComment(testId)).rejects.toEqual({
