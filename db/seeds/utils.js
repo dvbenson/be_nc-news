@@ -1,6 +1,3 @@
-// const db = require("../connection.js");
-// const { sort } = require("../data/test-data/articles.js");
-
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
