@@ -323,7 +323,7 @@ describe("PATCH: api/articles/:article_id (VOTES)", () => {
   });
 });
 
-describe.only("PATCH: api/comments/:comment_id (VOTES)", () => {
+describe("PATCH: api/comments/:comment_id (VOTES)", () => {
   test("200: request accepts an object that modifies the vote property in the database positively", () => {
     const comment_id = 1;
     const votes = { inc_votes: 5 };
@@ -356,7 +356,7 @@ describe.only("PATCH: api/comments/:comment_id (VOTES)", () => {
         );
       });
   });
-  describe.only("ERROR: /api/comments/:comment_id (VOTES)", () => {
+  describe("ERROR: /api/comments/:comment_id (VOTES)", () => {
     test("400: throws an error if request body does not have inc_votes property", () => {
       const comment_id = 2;
       const newVote = { votes: 2 };
