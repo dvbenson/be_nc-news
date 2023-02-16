@@ -74,3 +74,22 @@ exports.validateComment = (comment_id) => {
   }
   return comment_id;
 };
+
+exports.checkNewArticle = (newArticle) => {
+  console.log(newArticle, "<---util enter");
+  if (
+    !newArticle.hasOwnProperty("author") &&
+    !newArticle.hasOwnProperty("title") &&
+    !newArticle.hasOwnProperty("body") &&
+    !newArticle.hasOwnProperty("topic") &&
+    !newArticle.hasOwnProperty("article_img_url")
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Article missing required information, or information inputted incorrectly",
+    });
+  } else {
+    console.log(newArticle, "<---util exit");
+    return newArticle;
+  }
+};

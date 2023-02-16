@@ -182,6 +182,94 @@ describe("GET: /api/articles (QUERIES)", () => {
   });
 });
 
+describe.only("POST: /api/articles", () => {
+  test("201: article receives correct request input", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "I love celling used kars",
+      body: "I just do, get over it",
+      topic: "cats",
+      article_img_url: "",
+    };
+    return request(app)
+      .post(`/api/articles`)
+      .send(newArticle)
+      .expect(201)
+      .expect((response) => {
+        const newReturnArticle = response.body;
+        expect(Object.keys(newReturnArticle).length).toBe(8);
+        expect(newReturnArticle).toBeInstanceOf(Object);
+        expect(newReturnArticle).toMatchObject({
+          author: newReturnArticle.author,
+          title: newReturnArticle.title,
+          body: newReturnArticle.body,
+          article_img_url: expect.any(String),
+          article_id: expect.any(Number),
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  describe("ERROR: /api/articles", () => {
+    describe("ERROR: /api/articles", () => {
+      test("404: author doesn't exist", () => {
+        const newArticle = {
+          title: "New Article",
+          body: "This is a new article",
+          topic: "cats",
+          author: "invalid_author",
+          article_img_url: "https://www.example.com/image.jpg",
+        };
+
+        return request(app)
+          .post("/api/articles")
+          .send(newArticle)
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Topic or Author doesn't exist");
+          });
+      });
+
+      test("404: topic doesn't exist", () => {
+        const newArticle = {
+          title: "New Article",
+          body: "This is a new article",
+          topic: "invalid_topic",
+          author: "icellusedkars",
+          article_img_url: "https://www.example.com/image.jpg",
+        };
+
+        return request(app)
+          .post("/api/articles")
+          .send(newArticle)
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Topic or Author doesn't exist");
+          });
+      });
+
+      // test("400: request has incorrect properties", () => {
+      //   const newArticle = {
+      //     titlegood: "New Article",
+      //     body: "This is a new article",
+      //     authorbad: "valid_author",
+      //     article_img_url: "https://www.example.com/image.jpg",
+      //   };
+
+      //   return request(app)
+      //     .post("/api/articles")
+      //     .send(newArticle)
+      //     .expect(400)
+      //     .then(({ body }) => {
+      //       expect(body.msg).toBe(
+      //         "Article missing required information, or information inputted incorrectly"
+      //       );
+      //     });
+      // });
+    });
+  });
+});
+
 describe("GET: /api/articles/:article_id", () => {
   test("200: query sends an article object using the specific article_id", () => {
     return request(app)
@@ -254,7 +342,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
     });
   });
 });
-// add two new tests: articleId is valid && username exists(below)
+
 describe("PATCH: api/articles/:article_id (VOTES)", () => {
   test("200: request accepts an object that modifies the vote property in the database positively", () => {
     const articleId = 2;
@@ -319,6 +407,14 @@ describe("PATCH: api/articles/:article_id (VOTES)", () => {
         .patch(`/api/articles/${articleId}`)
         .send(newVote)
         .expect(422);
+    });
+    test("404: article_id doesn't exist", () => {
+      const article_id = 256789;
+      const newVote = { inc_votes: 3 };
+      return request(app)
+        .patch(`/api/articles/${article_id}`)
+        .send(newVote)
+        .expect(404);
     });
   });
 });
@@ -387,6 +483,14 @@ describe("PATCH: api/comments/:comment_id (VOTES)", () => {
         .patch(`/api/comments/${comment_id}`)
         .send(newVote)
         .expect(422);
+    });
+    test("404: comment_id doesn't exist", () => {
+      const comment_id = 2569876;
+      const newVote = { inc_votes: 3 };
+      return request(app)
+        .patch(`/api/comments/${comment_id}`)
+        .send(newVote)
+        .expect(404);
     });
   });
 });
