@@ -6,18 +6,19 @@ const {
   postComments,
   postArticle,
 } = require("../controllers/articles-controllers");
+
 const articlesRouter = require("express").Router();
 
-articlesRouter.get("/api/articles", getArticles);
+articlesRouter.route("/").get(getArticles).post(postArticle);
 
-articlesRouter.post("/api/articles", postArticle);
+articlesRouter
+  .route("/:article_id")
+  .get(getArticleById)
+  .patch(patchArticleVotes);
 
-articlesRouter.get("/api/articles/:article_id", getArticleById);
-
-articlesRouter.patch("/api/articles/:article_id", patchArticleVotes);
-
-articlesRouter.get("/api/articles/:article_id/comments", getArticleComments);
-
-articlesRouter.post("/api/articles/:article_id/comments", postComments);
+articlesRouter
+  .route("/:article_id/comments")
+  .get(getArticleComments)
+  .post(postComments);
 
 module.exports = articlesRouter;
