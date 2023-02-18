@@ -11,6 +11,6 @@ apiRouter.use("/topics", topicsRouter);
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/comments", commentsRouter);
 
-apiRouter.get("/api", getAllEndPoints);
+apiRouter.get("/", getAllEndPoints);
 
 module.exports = apiRouter;
