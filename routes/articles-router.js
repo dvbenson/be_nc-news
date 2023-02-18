@@ -8,14 +8,16 @@ const {
 
 const articlesRouter = require("express").Router();
 
-articlesRouter.get("/", getArticles);
+articlesRouter.route("/").get(getArticles);
 
-articlesRouter.get("/:article_id", getArticleById);
+articlesRouter
+  .route("/:article_id")
+  .get(getArticleById)
+  .patch(patchArticleVotes);
 
-articlesRouter.patch("/:article_id", patchArticleVotes);
-
-articlesRouter.get("/:article_id/comments", getArticleComments);
-
-articlesRouter.post("/:article_id/comments", postComments);
+articlesRouter
+  .route("/:article_id/comments")
+  .get(getArticleComments)
+  .post(postComments);
 
 module.exports = articlesRouter;
