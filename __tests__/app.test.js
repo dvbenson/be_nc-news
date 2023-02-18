@@ -87,8 +87,8 @@ describe("GET: /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        const articles = response.body;
-        expect(articles.length).toBe(12);
+        const articles = response.body.articles;
+        expect(articles.length).toBe(10);
         articles.forEach((article) => {
           expect(article).toHaveProperty("author", expect.any(String));
           expect(article).toHaveProperty("title", expect.any(String));
@@ -105,7 +105,7 @@ describe("GET: /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        const articles = response.body;
+        const articles = response.body.articles;
         articles.forEach((article) => {
           expect(article).toHaveProperty("comment_count", expect.any(String));
         });
@@ -116,12 +116,12 @@ describe("GET: /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        const articles = response.body;
+        const articles = response.body.articles;
 
         expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
         expect(articles[0].created_at).not.toBe("2020-01-04T00:24:00.000Z");
         expect(articles[articles.length - 1].created_at).toBe(
-          "2020-01-07T14:08:00.000Z"
+          "2020-04-17T01:08:00.000Z"
         );
         expect(articles[articles.length - 1].created_at).not.toBe(
           "2020-11-03T09:12:00.000Z"
@@ -136,7 +136,7 @@ describe("GET: QUERIES: /api/articles", () => {
       .get("/api/articles?topic=cats")
       .expect(200)
       .then((response) => {
-        const articles = response.body;
+        const articles = response.body.articles;
         articles.forEach((article) => {
           expect(article.topic).toBe("cats");
         });
@@ -147,26 +147,49 @@ describe("GET: QUERIES: /api/articles", () => {
       .get("/api/articles?sort_by=title")
       .expect(200)
       .then(({ body }) => {
-        const articles = body;
+        const articles = body.articles;
 
         expect(articles[0].title).toBe("Z");
-        expect(articles[articles.length - 1].title).toBe("A");
+        expect(articles[articles.length - 1].title).toBe(
+          "Does Mitch predate civilisation?"
+        );
       });
   });
-  test("200: get request can take a query which organises articles in order", () => {
+  test("200: get request takes a query that can organise articles in order", () => {
     return request(app)
       .get("/api/articles?order=asc")
       .expect(200)
       .then((response) => {
-        const articles = response.body;
+        const articles = response.body.articles;
         expect(articles[0].created_at).toBe("2020-01-07T14:08:00.000Z");
         expect(articles[articles.length - 1].created_at).toBe(
-          "2020-11-03T09:12:00.000Z"
+          "2020-10-16T05:03:00.000Z"
         );
         expect(articles[0].created_at).not.toBe("2020-11-03T09:12:00.000Z");
         expect(articles[articles.length - 1].created_at).not.toBe(
           "2020-01-04T00:24:00.000Z"
         );
+      });
+  });
+  test("200: accepts the limit query", () => {
+    return request(app)
+      .get("/api/articles?limit=6")
+      .then((response) => {
+        expect(response.body.articles.length).toBe(6);
+      });
+  });
+  test("200: accepts the page query", () => {
+    return request(app)
+      .get("/api/articles?p=1")
+      .then((response) => {
+        expect(response.body.articles[0].article_id).toBe(6);
+      });
+  });
+  test("200: checks for the article_count property", () => {
+    return request(app)
+      .get("/api/articles")
+      .then((response) => {
+        expect(response.body.article_count).toBe(10);
       });
   });
 
@@ -179,6 +202,8 @@ describe("GET: QUERIES: /api/articles", () => {
     test("400: order doesn't exist", () => {
       return request(app).get("/api/articles?order=longwise").expect(400);
     });
+    //400: check for topic test
+    //404: incorrect pathway
   });
 });
 
