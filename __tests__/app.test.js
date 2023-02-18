@@ -51,17 +51,17 @@ describe("GET: /api/users/:username", () => {
         expect(typeof testUser).toBe("object");
       });
   });
-});
 
-describe("ERROR: /api/users/:username", () => {
-  test("404: returns an error for a username that doesn't exist", () => {
-    const testUserName = "jeffroray";
-    return request(app)
-      .get(`/api/users/${testUserName}`)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Username not found");
-      });
+  describe("ERROR: /api/users/:username", () => {
+    test("404: returns an error for a username that doesn't exist", () => {
+      const testUserName = "jeffroray";
+      return request(app)
+        .get(`/api/users/${testUserName}`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Username not found");
+        });
+    });
   });
 });
 
@@ -130,7 +130,7 @@ describe("GET: /api/articles", () => {
   });
 });
 
-describe("GET: /api/articles (QUERIES)", () => {
+describe("GET: QUERIES: /api/articles", () => {
   test("200: get request can take a query which filters articles by a single topic", () => {
     return request(app)
       .get("/api/articles?topic=cats")
@@ -182,14 +182,13 @@ describe("GET: /api/articles (QUERIES)", () => {
   });
 });
 
-describe.only("POST: /api/articles", () => {
-  test("201: article receives correct request input", () => {
+describe("POST: /api/articles", () => {
+  test("201: article receives correct request input and outputs with comment_count and default img url", () => {
     const newArticle = {
       author: "icellusedkars",
       title: "I love celling used kars",
       body: "I just do, get over it",
       topic: "cats",
-      article_img_url: "",
     };
     return request(app)
       .post(`/api/articles`)
@@ -197,16 +196,47 @@ describe.only("POST: /api/articles", () => {
       .expect(201)
       .expect((response) => {
         const newReturnArticle = response.body;
-        expect(Object.keys(newReturnArticle).length).toBe(8);
+        expect(Object.keys(newReturnArticle).length).toBe(9);
         expect(newReturnArticle).toBeInstanceOf(Object);
         expect(newReturnArticle).toMatchObject({
           author: newReturnArticle.author,
           title: newReturnArticle.title,
           body: newReturnArticle.body,
-          article_img_url: expect.any(String),
+          topic: newReturnArticle.topic,
+          article_img_url: `https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700`,
           article_id: expect.any(Number),
           votes: 0,
           created_at: expect.any(String),
+          comment_count: expect.any(String),
+        });
+      });
+  });
+  test("201: article receives correct request input and outputs with specific img url", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "I love celling used kars",
+      body: "I just do, get over it",
+      topic: "cats",
+      article_img_url: "https://www.example.com/image.jpg",
+    };
+    return request(app)
+      .post(`/api/articles`)
+      .send(newArticle)
+      .expect(201)
+      .expect((response) => {
+        const newReturnArticle = response.body;
+        expect(Object.keys(newReturnArticle).length).toBe(9);
+        expect(newReturnArticle).toBeInstanceOf(Object);
+        expect(newReturnArticle).toMatchObject({
+          author: newReturnArticle.author,
+          title: newReturnArticle.title,
+          body: newReturnArticle.body,
+          topic: newReturnArticle.topic,
+          article_img_url: "https://www.example.com/image.jpg",
+          article_id: expect.any(Number),
+          votes: 0,
+          created_at: expect.any(String),
+          comment_count: expect.any(String),
         });
       });
   });
@@ -248,24 +278,24 @@ describe.only("POST: /api/articles", () => {
           });
       });
 
-      // test("400: request has incorrect properties", () => {
-      //   const newArticle = {
-      //     titlegood: "New Article",
-      //     body: "This is a new article",
-      //     authorbad: "valid_author",
-      //     article_img_url: "https://www.example.com/image.jpg",
-      //   };
+      test("400: request has incorrect properties", () => {
+        const newArticle = {
+          titlegood: "New Article",
+          body: "This is a new article",
+          authorbad: "valid_author",
+          article_img_url: "https://www.example.com/image.jpg",
+        };
 
-      //   return request(app)
-      //     .post("/api/articles")
-      //     .send(newArticle)
-      //     .expect(400)
-      //     .then(({ body }) => {
-      //       expect(body.msg).toBe(
-      //         "Article missing required information, or information inputted incorrectly"
-      //       );
-      //     });
-      // });
+        return request(app)
+          .post("/api/articles")
+          .send(newArticle)
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe(
+              "Article missing required information, or information inputted incorrectly"
+            );
+          });
+      });
     });
   });
 });
@@ -343,7 +373,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("PATCH: api/articles/:article_id (VOTES)", () => {
+describe("PATCH: VOTES: api/articles/:article_id", () => {
   test("200: request accepts an object that modifies the vote property in the database positively", () => {
     const articleId = 2;
     const votes = { inc_votes: 2 };
@@ -419,7 +449,7 @@ describe("PATCH: api/articles/:article_id (VOTES)", () => {
   });
 });
 
-describe("PATCH: api/comments/:comment_id (VOTES)", () => {
+describe("PATCH: VOTES: api/comments/:comment_id", () => {
   test("200: request accepts an object that modifies the vote property in the database positively", () => {
     const comment_id = 1;
     const votes = { inc_votes: 5 };

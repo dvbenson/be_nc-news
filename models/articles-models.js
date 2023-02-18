@@ -55,57 +55,6 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   });
 };
 
-// exports.addNewArticle = (newArticle) => {
-//   const { author } = newArticle;
-//   const { title } = newArticle;
-//   const { body } = newArticle;
-//   const { topic } = newArticle;
-//   const { article_img_url } = newArticle;
-
-//   const queryStr = format(`SELECT * FROM topics WHERE slug = $1;`);
-//   return (
-//     db
-//       .query(queryStr, [topic])
-//       .then(({ rowCount }) => {
-//         if (rowCount === 0) {
-//           return Promise.reject({
-//             status: 404,
-//             msg: "Topic or Author doesn't exist",
-//           });
-//         }
-//       })
-//       .then(() => {
-//         const queryStr = format(`SELECT * FROM users WHERE username = $1;`);
-//         return db.query(queryStr, [author]).then(({ rowCount }) => {
-//           if (rowCount === 0) {
-//             return Promise.reject({
-//               status: 404,
-//               msg: "Topic or Author doesn't exist",
-//             });
-//           }
-//         });
-//       })
-//       .then(() => {
-//         return checkNewArticle(newArticle);
-//       })
-//       .then(() => {
-//         const queryStr = format(
-//           `INSERT INTO articles (author, title, body, topic, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
-//         );
-//         return db.query(queryStr, [
-//           author,
-//           title,
-//           body,
-//           topic,
-//           article_img_url,
-//         ]);
-//       })
-//       .then((results) => {
-//         return results.rows[0];
-//       })
-//   );
-// };
-
 exports.addNewArticle = (newArticle) => {
   const { author } = newArticle;
   const { title } = newArticle;
@@ -132,10 +81,38 @@ exports.addNewArticle = (newArticle) => {
         });
       }
 
+      if (!article_img_url) {
+        const queryStr = format(
+          `INSERT INTO articles (author, title, body, topic) VALUES ($1, $2, $3, $4) RETURNING *;`
+        );
+        return db.query(queryStr, [author, title, body, topic]);
+      } else {
+        const queryStr = format(
+          `INSERT INTO articles (author, title, body, topic, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
+        );
+        return db.query(queryStr, [
+          author,
+          title,
+          body,
+          topic,
+          article_img_url,
+        ]);
+      }
+    })
+    .then((results) => {
+      const { article_id } = results.rows[0];
+
       const queryStr = format(
-        `INSERT INTO articles (author, title, body, topic, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
+        `SELECT articles.*, 
+         COUNT (comments.article_id) as comment_count
+         FROM articles 
+         LEFT JOIN comments
+         ON articles.article_id = comments.article_id
+         WHERE articles.article_id = $1
+         GROUP BY (articles.article_id);`
       );
-      return db.query(queryStr, [author, title, body, topic, article_img_url]);
+
+      return db.query(queryStr, [article_id]);
     })
     .then((results) => {
       return results.rows[0];

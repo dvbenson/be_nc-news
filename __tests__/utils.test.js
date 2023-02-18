@@ -200,14 +200,29 @@ describe("validateComment", () => {
   });
 });
 
-describe.only("checkNewArticle", () => {
-  test("new article has required properties", () => {
+describe("checkNewArticle", () => {
+  test("returns new article that has required properties", () => {
     const newArticle = {
       author: "icellusedkars",
       title: "I love celling used kars",
       body: "I just do, get over it",
       topic: "cats",
-      article_img_url: "",
+    };
+    expect(checkNewArticle(newArticle)).toEqual(newArticle);
+    expect(newArticle).toBeInstanceOf(Object);
+    expect(Object.keys(newArticle).length).toBe(4);
+    expect(newArticle).toHaveProperty("author", expect.any(String));
+    expect(newArticle).toHaveProperty("title", expect.any(String));
+    expect(newArticle).toHaveProperty("body", expect.any(String));
+    expect(newArticle).toHaveProperty("topic", expect.any(String));
+  });
+  test("returns new article that has required properties and optional url img", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "I love celling used kars",
+      body: "I just do, get over it",
+      topic: "cats",
+      article_img_url: "www.my-pic-yes.com.org",
     };
     expect(checkNewArticle(newArticle)).toEqual(newArticle);
     expect(newArticle).toBeInstanceOf(Object);
@@ -218,19 +233,6 @@ describe.only("checkNewArticle", () => {
     expect(newArticle).toHaveProperty("topic", expect.any(String));
     expect(newArticle).toHaveProperty("article_img_url", expect.any(String));
   });
-  // test("new article rejects when incorrect properties in request", () => {
-  //   const newArticle = {
-  //     notauthor: "icellusedkars",
-  //     title: "I love celling used kars",
-  //     bodyimage: "I just do, get over it",
-  //     topic: "cats",
-  //     article_img_url: "",
-  //   };
-  //   expect(checkNewArticle(newArticle)).toEqual({
-  //     status: 400,
-  //     msg: "Article missing required information, or information inputted incorrectly",
-  //   });
-  // });
   test("new article rejects when incorrect properties in request", () => {
     const newArticle = {
       notauthor: "icellusedkars",
@@ -239,14 +241,23 @@ describe.only("checkNewArticle", () => {
       topic: "cats",
       article_img_url: "",
     };
-    try {
-      const result = checkNewArticle(newArticle);
-      expect(result).toEqual(newArticle);
-    } catch (err) {
-      expect(err).toEqual({
-        status: 400,
-        msg: "Article missing required information, or information inputted incorrectly",
-      });
-    }
+    expect(checkNewArticle(newArticle)).rejects.toEqual({
+      status: 400,
+      msg: "Article missing required information, or information inputted incorrectly",
+    });
+  });
+  test("new article rejects when too many properties", () => {
+    const newArticle = {
+      notauthor: "icellusedkars",
+      title: "I love celling used kars",
+      bodyimage: "I just do, get over it",
+      topic: "cats",
+      date: "january 2023",
+      time: "10:34",
+    };
+    expect(checkNewArticle(newArticle)).rejects.toEqual({
+      status: 400,
+      msg: "Article missing required information, or information inputted incorrectly",
+    });
   });
 });
