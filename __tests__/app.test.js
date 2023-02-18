@@ -341,6 +341,7 @@ describe("GET: /api/articles/:article_id", () => {
         expect(article).toHaveProperty("created_at", expect.any(String));
         expect(article).toHaveProperty("votes", expect.any(Number));
         expect(article).toHaveProperty("article_img_url", expect.any(String));
+        expect(article).toHaveProperty("comment_count", expect.any(String));
       });
   });
   describe("ERROR: /api/articles/:article_id", () => {
@@ -383,6 +384,20 @@ describe("GET: /api/articles/:article_id/comments", () => {
         expect(comments[comments.length - 1].created_at).toBe(
           "2020-01-01T03:08:00.000Z"
         );
+      });
+  });
+  test("200: takes the limit query", () => {
+    return request(app)
+      .get("/api/articles/3/comments/?limit=2")
+      .then((response) => {
+        expect(response.body.length).toBe(2);
+      });
+  });
+  test("200: takes the p query", () => {
+    return request(app)
+      .get("/api/articles/3/comments?p=1")
+      .then((response) => {
+        expect(response.body[0].article_id).toBe(3);
       });
   });
 

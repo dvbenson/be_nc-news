@@ -135,11 +135,14 @@ exports.addNewArticle = (newArticle) => {
 };
 
 exports.fetchArticleById = (article_id) => {
-  //this needs comment_count
   const queryStr = format(`
-    SELECT *
-    FROM articles
-    WHERE article_id = $1;
+  SELECT articles.* ,
+  COUNT(comments.article_id) as comment_count
+  FROM articles
+  LEFT JOIN comments
+  ON articles.article_id = comments.article_id
+  WHERE articles.article_id = $1
+  GROUP BY (articles.article_id)
     `);
   return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
     if (rowCount === 0) {
@@ -184,24 +187,34 @@ exports.addNewComment = (article_id, newComment) => {
   });
 };
 
-exports.fetchArticleComments = (article_id) => {
+exports.fetchArticleComments = (article_id, limit, p) => {
+  if (!typeof limit === "number" || !typeof p === "number") {
+    return Promise.reject({
+      status: 400,
+      msg: "Query not accepted, please try again",
+    });
+  }
   const queryStr = format(`
       SELECT *
       FROM comments
       WHERE article_id = $1
       ORDER BY created_at DESC
+      LIMIT $2
+      OFFSET $3
       `);
 
-  return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
-    if (rowCount === 0) {
-      return Promise.reject({
-        status: 404,
-        msg: "This article has no comments yet",
-      });
-    } else {
-      return rows;
-    }
-  });
+  return db
+    .query(queryStr, [article_id, limit, p])
+    .then(({ rowCount, rows }) => {
+      if (rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "This article has no comments yet",
+        });
+      } else {
+        return rows;
+      }
+    });
 };
 
 exports.updateArticleVotes = (article_id, votes) => {

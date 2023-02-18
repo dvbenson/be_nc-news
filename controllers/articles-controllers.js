@@ -42,7 +42,9 @@ exports.getArticleById = (request, response, next) => {
 
 exports.getArticleComments = (request, response, next) => {
   const { article_id } = request.params;
-  fetchArticleComments(article_id)
+  const { limit, p } = request.query;
+
+  fetchArticleComments(article_id, limit, p)
     .then((results) => {
       response.status(200).send(results);
     })
