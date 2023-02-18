@@ -9,7 +9,13 @@ const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
 
-exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
+exports.fetchArticles = (
+  sort_by = "created_at",
+  order = "desc",
+  topic,
+  limit = 10,
+  p = 0
+) => {
   const validSortBys = [
     "title",
     "topic",
@@ -21,7 +27,12 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   ];
   const validOrder = ["asc", "desc"];
 
-  if (!validSortBys.includes(sort_by) || !validOrder.includes(order)) {
+  if (
+    !validSortBys.includes(sort_by) ||
+    !validOrder.includes(order) ||
+    !typeof limit === "number" ||
+    !typeof p === "number"
+  ) {
     return Promise.reject({
       status: 400,
       msg: "Query not accepted, please try again",
@@ -42,16 +53,20 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
       WHERE topic LIKE $1
       GROUP BY (articles.article_id)
       ORDER BY ${sort_by} ${order}
+      LIMIT ${limit}
+      OFFSET ${p}
       `;
   } else {
     selectQuery += `
       GROUP BY (articles.article_id)
       ORDER BY ${sort_by} ${order}
+      LIMIT ${limit}
+      OFFSET ${p}
       `;
   }
 
   return db.query(selectQuery, queryParams).then((results) => {
-    return results.rows;
+    return { articles: results.rows, article_count: results.rows.length };
   });
 };
 
@@ -120,6 +135,7 @@ exports.addNewArticle = (newArticle) => {
 };
 
 exports.fetchArticleById = (article_id) => {
+  //this needs comment_count
   const queryStr = format(`
     SELECT *
     FROM articles
