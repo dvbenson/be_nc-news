@@ -74,3 +74,40 @@ exports.validateComment = (comment_id) => {
   }
   return comment_id;
 };
+
+exports.checkNewArticle = (newArticle) => {
+  const requiredProperties = ["author", "title", "body", "topic"];
+  const optionalProperties = [
+    "author",
+    "title",
+    "body",
+    "topic",
+    "article_img_url",
+  ];
+
+  const actualProperties = Object.keys(newArticle);
+
+  // Check that all required properties are present
+  const missingProperties = requiredProperties.filter(
+    (prop) => !actualProperties.includes(prop)
+  );
+  if (missingProperties.length > 0) {
+    return Promise.reject({
+      status: 400,
+      msg: "Article missing required information, or information inputted incorrectly",
+    });
+  }
+
+  // Check that there are no additional properties except optional img url
+  const extraProperties = actualProperties.filter(
+    (prop) => !optionalProperties.includes(prop)
+  );
+  if (extraProperties.length > 0) {
+    return Promise.reject({
+      status: 400,
+      msg: "Article missing required information, or information inputted incorrectly",
+    });
+  }
+
+  return newArticle;
+};

@@ -29,8 +29,15 @@ exports.updateCommentVotes = (comment_id, votes) => {
       RETURNING *;`,
             [newVoteNum, checkedCommentId]
           )
-          .then((result) => {
-            return result.rows[0];
+          .then(({ rowCount, rows }) => {
+            if (rowCount === 0) {
+              return Promise.reject({
+                status: 404,
+                msg: "This comment doesn't exist ",
+              });
+            } else {
+              return rows[0];
+            }
           });
       } else {
         return db
@@ -43,8 +50,15 @@ exports.updateCommentVotes = (comment_id, votes) => {
         `,
             [checkedVotes.inc_votes, checkedCommentId]
           )
-          .then((result) => {
-            return result.rows[0];
+          .then(({ rowCount, rows }) => {
+            if (rowCount === 0) {
+              return Promise.reject({
+                status: 404,
+                msg: "This comment doesn't exist ",
+              });
+            } else {
+              return rows[0];
+            }
           });
       }
     }
