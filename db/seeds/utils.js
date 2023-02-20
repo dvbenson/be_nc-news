@@ -111,3 +111,29 @@ exports.checkNewArticle = (newArticle) => {
 
   return newArticle;
 };
+
+exports.checkNewTopic = (newTopic) => {
+  if (newTopic === {}) {
+    return Promise.reject({
+      status: 404,
+      msg: "Topic missing required fields, empty or incorrect",
+    });
+  }
+  if (Object.keys(newTopic).length > 2) {
+    return Promise.reject({
+      status: 404,
+      msg: "Topic missing required fields, empty or incorrect",
+    });
+  }
+  if (
+    !newTopic.hasOwnProperty("slug") &&
+    !newTopic.hasOwnProperty("description")
+  ) {
+    return Promise.reject({
+      status: 404,
+      msg: "Topic missing required fields, empty or incorrect",
+    });
+  } else {
+    return newTopic;
+  }
+};

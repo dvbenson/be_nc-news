@@ -1,4 +1,4 @@
-const { fetchTopics } = require("../models/topics-models");
+const { fetchTopics, addNewTopic } = require("../models/topics-models");
 
 const db = require("../db/connection.js");
 const format = require("pg-format");
@@ -11,6 +11,18 @@ exports.getTopics = (request, response, next) => {
     })
     .catch((error) => {
       console.log(error);
+      next(error);
+    });
+};
+
+exports.postTopic = (request, response, next) => {
+  const newTopic = request.body;
+
+  addNewTopic(newTopic)
+    .then((topic) => {
+      response.status(201).send(topic);
+    })
+    .catch((error) => {
       next(error);
     });
 };

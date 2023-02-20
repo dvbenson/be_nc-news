@@ -325,6 +325,72 @@ describe("POST: /api/articles", () => {
   });
 });
 
+describe("POST: /api/topics", () => {
+  test("201: receives the correct post request format and creates topic", () => {
+    const newTopic = {
+      slug: "pets",
+      description: "All things pets; cats, dogs, stick-insects",
+    };
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(201)
+      .then((response) => {
+        const postedTopic = response.body;
+        expect(Object.keys(postedTopic).length).toBe(2);
+        expect(postedTopic).toBeInstanceOf(Object);
+        expect(postedTopic).toMatchObject({
+          slug: newTopic.slug,
+          description: newTopic.description,
+        });
+      });
+  });
+  describe("ERRORS: /api/topics", () => {
+    test("404: rejects empty object", () => {
+      const newTopic = {};
+      return request(app)
+        .post("/api/topics")
+        .send(newTopic)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Topic missing required fields, empty or incorrect"
+          );
+        });
+    });
+    test("404: doesn't have slug or description properties", () => {
+      const newTopic = {
+        topic: "Insects",
+      };
+      return request(app)
+        .post("/api/topics")
+        .send(newTopic)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Topic missing required fields, empty or incorrect"
+          );
+        });
+    });
+    test("404: has too many properties", () => {
+      const newTopic = {
+        slug: "Insects",
+        description: "A bug's life",
+        creator: "breaking_bugs",
+      };
+      return request(app)
+        .post("/api/topics")
+        .send(newTopic)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Topic missing required fields, empty or incorrect"
+          );
+        });
+    });
+  });
+});
+
 describe("GET: /api/articles/:article_id", () => {
   test("200: query sends an article object using the specific article_id", () => {
     return request(app)

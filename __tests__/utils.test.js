@@ -7,6 +7,7 @@ const {
   checkNewComment,
   validateComment,
   checkNewArticle,
+  checkNewTopic,
 } = require("../db/seeds/utils");
 
 const { deleteComments } = require("../models/comments-models.js");
@@ -258,6 +259,57 @@ describe("checkNewArticle", () => {
     expect(checkNewArticle(newArticle)).rejects.toEqual({
       status: 400,
       msg: "Article missing required information, or information inputted incorrectly",
+    });
+  });
+});
+
+describe("checkNewTopic", () => {
+  test("returns the correct request", () => {
+    const newTopic = {
+      slug: "Sweets",
+      description: "Welcome to the candy shop",
+    };
+    const actual = checkNewTopic(newTopic);
+    const output = newTopic;
+
+    expect(actual).toBeInstanceOf(Object);
+    expect(actual).toEqual(output);
+    expect(output).toMatchObject({
+      slug: newTopic.slug,
+      description: newTopic.description,
+    });
+  });
+  test("rejects an empty object", () => {
+    const newTopic = {};
+    const actual = checkNewTopic(newTopic);
+
+    expect(actual).rejects.toEqual({
+      status: 404,
+      msg: "Topic missing required fields, empty or incorrect",
+    });
+  });
+  test("rejects an object with than two properties", () => {
+    const newTopic = {
+      slug: "Insects",
+      description: "A bug's life",
+      created_by: "Buggy_lady",
+    };
+    const actual = checkNewTopic(newTopic);
+    expect(actual).rejects.toEqual({
+      status: 404,
+      msg: "Topic missing required fields, empty or incorrect",
+    });
+  });
+  test("rejects an object without the two required properties", () => {
+    const newTopic = {
+      topic_title: "Insects",
+      about: "A bug's life",
+    };
+    const actual = checkNewTopic(newTopic);
+
+    expect(actual).rejects.toEqual({
+      status: 404,
+      msg: "Topic missing required fields, empty or incorrect",
     });
   });
 });
