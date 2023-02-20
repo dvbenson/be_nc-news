@@ -430,7 +430,7 @@ describe("GET: /api/articles/:article_id", () => {
   });
 });
 
-describe.only("DELETE: /api/articles/:article_id", () => {
+describe("DELETE: /api/articles/:article_id", () => {
   test(
     "204: article deleted",
     () => {
