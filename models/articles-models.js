@@ -153,6 +153,28 @@ exports.fetchArticleById = (article_id) => {
   });
 };
 
+exports.removeArticleById = (article_id) => {
+  return Promise.resolve(checkArticleId(article_id))
+    .then((returnedArticleId) => {
+      const queryStr = format(`SELECT * FROM articles WHERE article_id = $1;`);
+      return db.query(queryStr, [returnedArticleId]);
+    })
+    .then(({ rowCount, returnedArticleId }) => {
+      if (rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Article doesn't exist, check the article_id",
+        });
+      } else {
+        const queryStr = format(`DELETE FROM articles WHERE article_id = $1`);
+        return db.query(queryStr, [returnedArticleId]);
+      }
+    })
+    .then(() => {
+      return { msg: "message deleted" };
+    });
+};
+
 exports.addNewComment = (article_id, newComment) => {
   return Promise.all([
     checkArticleId(article_id),

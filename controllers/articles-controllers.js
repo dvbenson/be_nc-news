@@ -5,6 +5,7 @@ const {
   addNewComment,
   updateArticleVotes,
   addNewArticle,
+  removeArticleById,
 } = require("../models/articles-models");
 
 exports.getArticles = (request, response, next) => {
@@ -34,6 +35,18 @@ exports.getArticleById = (request, response, next) => {
   fetchArticleById(article_id)
     .then((article) => {
       response.status(200).send(article);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.deleteArticleById = (request, response, next) => {
+  const article_id = request.params.article_id;
+
+  removeArticleById(article_id)
+    .then((result) => {
+      response.status(204).send(result.msg);
     })
     .catch((error) => {
       next(error);

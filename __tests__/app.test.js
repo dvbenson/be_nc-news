@@ -430,6 +430,43 @@ describe("GET: /api/articles/:article_id", () => {
   });
 });
 
+describe.only("DELETE: /api/articles/:article_id", () => {
+  test(
+    "204: article deleted",
+    () => {
+      const article_id = 1;
+      return request(app)
+        .delete(`/api/articles/${article_id}`)
+        .expect(204)
+        .then((response) => {
+          expect(response.body).toEqual({});
+        });
+    },
+    describe("ERRORS: api/articles/:article_id", () => {
+      test("400: incorrect ID", () => {
+        const article_id = "bad_id";
+        return request(app)
+          .delete(`/api/articles/${article_id}`)
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe(`Invalid Article ID: please try again`);
+          });
+      });
+      test("404: article_id doesn't exist", () => {
+        const article_id = 123456;
+        return request(app)
+          .delete(`/api/articles/${article_id}`)
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe(
+              `Article doesn't exist, check the article_id`
+            );
+          });
+      });
+    })
+  );
+});
+
 describe("GET: /api/articles/:article_id/comments", () => {
   test("200: received array of comments for the given article_id", () => {
     return request(app)
