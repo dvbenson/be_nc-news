@@ -3,6 +3,7 @@ const {
   updateCommentVotes,
 } = require("../models/comments-models");
 
+// refactor searchComments
 exports.searchComments = (request, response, next) => {
   const { comment_id } = request.params;
   deleteComments(comment_id)

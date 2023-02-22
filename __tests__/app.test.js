@@ -17,6 +17,7 @@ describe("GET: /api", () => {
   test("200: responds with correct status code", () => {
     return request(app).get("/api").expect(200);
   });
+  //test for 400 error Bad Request for incorrect API pathway e.g. /apii, would that be 404?
 });
 
 describe("GET: /api/users", () => {
@@ -34,6 +35,8 @@ describe("GET: /api/users", () => {
         });
       });
   });
+  //error tests
+  //400 Bad Request /userss not found
 });
 
 describe("GET: /api/users/:username", () => {
@@ -79,6 +82,7 @@ describe("GET: /api/topics", () => {
         });
       });
   });
+  //error test 400 /api/topiccss or /api/topic
 });
 
 describe("GET: /api/articles", () => {
@@ -302,7 +306,7 @@ describe("POST: /api/articles", () => {
             expect(body.msg).toBe("Topic or Author doesn't exist");
           });
       });
-
+      // change to 422?
       test("400: request has incorrect properties", () => {
         const newArticle = {
           titlegood: "New Article",
@@ -346,6 +350,7 @@ describe("POST: /api/topics", () => {
       });
   });
   describe("ERRORS: /api/topics", () => {
+    //is this a 422?
     test("404: rejects empty object", () => {
       const newTopic = {};
       return request(app)
@@ -358,6 +363,7 @@ describe("POST: /api/topics", () => {
           );
         });
     });
+    // 422
     test("404: doesn't have slug or description properties", () => {
       const newTopic = {
         topic: "Insects",
@@ -372,6 +378,7 @@ describe("POST: /api/topics", () => {
           );
         });
     });
+    //422
     test("404: has too many properties", () => {
       const newTopic = {
         slug: "Insects",
@@ -440,6 +447,7 @@ describe("DELETE: /api/articles/:article_id", () => {
         .expect(204)
         .then((response) => {
           expect(response.body).toEqual({});
+          //expect msg to be "deleted article successful"
         });
     },
     describe("ERRORS: api/articles/:article_id", () => {
@@ -558,6 +566,7 @@ describe("PATCH: VOTES: api/articles/:article_id", () => {
         .send(newVote)
         .expect(400);
     });
+
     test("400: throws an error if request body is empty", () => {
       const articleId = 2;
       return request(app)
@@ -565,6 +574,7 @@ describe("PATCH: VOTES: api/articles/:article_id", () => {
         .send()
         .expect(400);
     });
+    //could be correct 422
     test("422: throws an error if the value of inc_votes is invalid", () => {
       const articleId = 2;
       const newVote = { inc_votes: "string" };
@@ -573,6 +583,7 @@ describe("PATCH: VOTES: api/articles/:article_id", () => {
         .send(newVote)
         .expect(422);
     });
+    //could be incorrect 422
     test("422: throws an error if there is another property in the request body", () => {
       const articleId = 2;
       const newVote = { inc_votes: 2, name: "Doggo" };
@@ -589,6 +600,7 @@ describe("PATCH: VOTES: api/articles/:article_id", () => {
         .send(newVote)
         .expect(404);
     });
+    //article_id is incorrect format i.e. string
   });
 });
 
@@ -641,6 +653,7 @@ describe("PATCH: VOTES: api/comments/:comment_id", () => {
         .send()
         .expect(400);
     });
+    //maybe correct 422
     test("422: throws an error if the value of inc_votes is invalid", () => {
       const comment_id = 2;
       const newVote = { inc_votes: "string" };
@@ -649,6 +662,7 @@ describe("PATCH: VOTES: api/comments/:comment_id", () => {
         .send(newVote)
         .expect(422);
     });
+    //maybe incorrect 422
     test("422: throws an error if there is another property in the request body", () => {
       const comment_id = 2;
       const newVote = { inc_votes: 2, name: "Doggo" };
@@ -665,6 +679,7 @@ describe("PATCH: VOTES: api/comments/:comment_id", () => {
         .send(newVote)
         .expect(404);
     });
+    //invalid id i.e. string
   });
 });
 
@@ -688,7 +703,9 @@ describe("POST: /api/articles/:article_id/comments", () => {
         });
       });
   });
+  //look at the code of this MVC and see what is there to determine how to stretch out tests
   describe("ERROR: /api/articles/:article_id/comments", () => {
+    //add a testcase for bad request body
     test("400: bad body/missing required fields", () => {
       return request(app)
         .post("/api/articles/1/comments")
@@ -698,6 +715,11 @@ describe("POST: /api/articles/:article_id/comments", () => {
         });
     });
   });
+  //test for incorrect properties
+  //test for too many properties
+  //test for empty object
+  //article_id incorrect format
+  //article_id doesn't exist
 });
 
 describe("DELETE: /api/comments/:comment_id", () => {
@@ -707,6 +729,7 @@ describe("DELETE: /api/comments/:comment_id", () => {
       .expect(204)
       .then((response) => {
         expect(response.body).toEqual({});
+        //add success message
       });
   });
   describe("ERROR: /api/comments/:comment_id", () => {
@@ -730,6 +753,7 @@ describe("DELETE: /api/comments/:comment_id", () => {
 });
 
 describe("ERRORS: universal", () => {
+  //add this to every test? or is that not DRY
   test("404: incorrect pathway", () => {
     return request(app).get("/api/this-is-incorrect").expect(404);
   });

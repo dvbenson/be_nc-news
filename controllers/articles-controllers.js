@@ -42,8 +42,7 @@ exports.getArticleById = (request, response, next) => {
 };
 
 exports.deleteArticleById = (request, response, next) => {
-  const article_id = request.params.article_id;
-
+  const { article_id } = request.params;
   removeArticleById(article_id)
     .then((result) => {
       response.status(204).send(result.msg);

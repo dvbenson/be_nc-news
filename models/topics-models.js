@@ -11,7 +11,6 @@ exports.fetchTopics = () => {
 };
 
 exports.addNewTopic = (newTopic) => {
-  // console.log(newTopic, "<--- enter model");
   return Promise.all([checkNewTopic(newTopic)])
     .then(([returnedNewTopic]) => {
       const { slug } = returnedNewTopic;
@@ -22,7 +21,6 @@ exports.addNewTopic = (newTopic) => {
       return db.query(queryStr, [slug, description]);
     })
     .then((results) => {
-      // console.log(results, "<----out of model");
       return results.rows[0];
     });
 };

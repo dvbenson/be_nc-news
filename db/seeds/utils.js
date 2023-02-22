@@ -87,7 +87,6 @@ exports.checkNewArticle = (newArticle) => {
 
   const actualProperties = Object.keys(newArticle);
 
-  // Check that all required properties are present
   const missingProperties = requiredProperties.filter(
     (prop) => !actualProperties.includes(prop)
   );
@@ -98,7 +97,6 @@ exports.checkNewArticle = (newArticle) => {
     });
   }
 
-  // Check that there are no additional properties except optional img url
   const extraProperties = actualProperties.filter(
     (prop) => !optionalProperties.includes(prop)
   );
