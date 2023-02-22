@@ -10,6 +10,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", apiRouter);
+app.get("/", function (req, res) {
+  res.redirect("/api");
+});
 
 app.use(customErrors);
 app.use(postgresErrors);
