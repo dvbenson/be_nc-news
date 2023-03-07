@@ -45,7 +45,7 @@ exports.deleteArticleById = (request, response, next) => {
   const { article_id } = request.params;
   removeArticleById(article_id)
     .then((result) => {
-      response.status(204).send(result.msg);
+      response.status(204).send();
     })
     .catch((error) => {
       next(error);

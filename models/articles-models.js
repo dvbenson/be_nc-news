@@ -169,9 +169,6 @@ exports.removeArticleById = (article_id) => {
         const queryStr = format(`DELETE FROM articles WHERE article_id = $1`);
         return db.query(queryStr, [returnedArticleId]);
       }
-    })
-    .then(() => {
-      return { msg: "message deleted" };
     });
 };
 
@@ -180,32 +177,42 @@ exports.addNewComment = (article_id, newComment) => {
     checkArticleId(article_id),
     checkNewComment(newComment),
   ]).then(([resultArticleId, resultBody]) => {
-    const queryStr = format(`SELECT * FROM users WHERE username = $1;`);
-    return db
-      .query(queryStr, [resultBody.username])
-      .then(({ rowCount, rows }) => {
-        if (rowCount === 0) {
-          return Promise.reject({
-            status: 404,
-            msg: "Username doesn't exist",
-          });
-        }
+    const queryStr = format(`SELECT * FROM articles WHERE article_id = $1;`);
+    return db.query(queryStr, [resultArticleId]).then(({ rowCount, rows }) => {
+      if (rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Article doesn't exist",
+        });
+      }
 
-        const queryStr = format(`INSERT INTO comments
+      const queryStr = format(`SELECT * FROM users WHERE username = $1;`);
+      return db
+        .query(queryStr, [resultBody.username])
+        .then(({ rowCount, rows }) => {
+          if (rowCount === 0) {
+            return Promise.reject({
+              status: 404,
+              msg: "Username doesn't exist",
+            });
+          }
+
+          const queryStr = format(`INSERT INTO comments
       (author, article_id, body)
       VALUES ($1, $2, $3)
       RETURNING *;`);
 
-        return db
-          .query(queryStr, [
-            resultBody.username,
-            resultArticleId,
-            resultBody.body,
-          ])
-          .then((result) => {
-            return result.rows[0];
-          });
-      });
+          return db
+            .query(queryStr, [
+              resultBody.username,
+              resultArticleId,
+              resultBody.body,
+            ])
+            .then((result) => {
+              return result.rows[0];
+            });
+        });
+    });
   });
 };
 

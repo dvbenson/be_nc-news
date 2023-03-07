@@ -4,15 +4,25 @@ const db = require("../db/connection.js");
 const format = require("pg-format");
 const query = require("express");
 
-exports.deleteComments = (comment_id) => {
-  return Promise.all([validateComment(comment_id)]).then(([comment_id]) => {
-    return db.query(
-      `
-      DELETE FROM comments WHERE comment_id = $1;
-      `,
-      [comment_id]
-    );
-  });
+exports.removeCommentById = (comment_id) => {
+  return Promise.resolve(validateComment(comment_id))
+    .then((returnedComment_id) => {
+      const queryStr = format(`SELECT * FROM comments WHERE comment_id = $1;`);
+      return db.query(queryStr, [returnedComment_id]);
+    })
+    .then(({ rowCount, returnedComment_id }) => {
+      if (rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Comment doesn't exist, check the comment_id",
+        });
+      } else {
+        const queryStr = format(`
+        DELETE FROM comments WHERE comment_id = $1;
+        `);
+        return db.query(queryStr, [returnedComment_id]);
+      }
+    });
 };
 
 exports.updateCommentVotes = (comment_id, votes) => {

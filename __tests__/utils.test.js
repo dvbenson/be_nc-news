@@ -161,7 +161,7 @@ describe("checkNewComment", () => {
     const input = { firstname: "bob", secondname: "henry" };
     expect(checkNewComment(input)).rejects.toEqual({
       status: 400,
-      msg: "Invalid Comment Format",
+      msg: 'Comment body must be: {username: "test-username", body:"test-body"}',
     });
   });
 });

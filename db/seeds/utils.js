@@ -38,7 +38,16 @@ exports.checkNewComment = (newComment) => {
   ) {
     return Promise.reject({
       status: 400,
-      msg: "Invalid Comment Format",
+      msg: 'Comment body must be: {username: "test-username", body:"test-body"}',
+    });
+  }
+  if (
+    Object.keys(newComment).length > 2 ||
+    Object.keys(newComment).length < 2
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Comment body must be: {username: "test-username", body:"test-body"}',
     });
   } else {
     return newComment;
