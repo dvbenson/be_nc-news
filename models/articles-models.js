@@ -3,39 +3,39 @@ const {
   checkNewComment,
   checkVotes,
   checkNewArticle,
-} = require("../db/seeds/utils.js");
+} = require('../db/seeds/utils.js');
 
-const db = require("../db/connection.js");
-const format = require("pg-format");
-const query = require("express");
+const db = require('../db/connection.js');
+const format = require('pg-format');
+const query = require('express');
 
 exports.fetchArticles = (
-  sort_by = "created_at",
-  order = "desc",
+  sort_by = 'created_at',
+  order = 'desc',
   topic,
-  limit = 10,
-  p = 0
+  limit,
+  p
 ) => {
   const validSortBys = [
-    "title",
-    "topic",
-    "author",
-    "body",
-    "votes",
-    "created_at",
-    "comment_count",
+    'title',
+    'topic',
+    'author',
+    'body',
+    'votes',
+    'created_at',
+    'comment_count',
   ];
-  const validOrder = ["asc", "desc"];
+  const validOrder = ['asc', 'desc'];
 
   if (
     !validSortBys.includes(sort_by) ||
     !validOrder.includes(order) ||
-    !typeof limit === "number" ||
-    !typeof p === "number"
+    !typeof limit === 'number' ||
+    !typeof p === 'number'
   ) {
     return Promise.reject({
       status: 400,
-      msg: "Query not accepted, please try again",
+      msg: 'Query not accepted, please try again',
     });
   }
   let selectQuery = ` 
@@ -53,15 +53,18 @@ exports.fetchArticles = (
       WHERE topic LIKE $1
       GROUP BY (articles.article_id)
       ORDER BY ${sort_by} ${order}
-      LIMIT ${limit}
-      OFFSET ${p}
       `;
+    if (limit && p) {
+      queryParams.push(limit, p);
+      selectQuery += `
+    LIMIT ${limit}
+    OFFSET ${p}
+    `;
+    }
   } else {
     selectQuery += `
       GROUP BY (articles.article_id)
       ORDER BY ${sort_by} ${order}
-      LIMIT ${limit}
-      OFFSET ${p}
       `;
   }
 
@@ -146,7 +149,7 @@ exports.fetchArticleById = (article_id) => {
     `);
   return db.query(queryStr, [article_id]).then(({ rowCount, rows }) => {
     if (rowCount === 0) {
-      return Promise.reject({ status: 404, msg: "Article ID not found" });
+      return Promise.reject({ status: 404, msg: 'Article ID not found' });
     } else {
       return rows[0];
     }
@@ -217,33 +220,38 @@ exports.addNewComment = (article_id, newComment) => {
 };
 
 exports.fetchArticleComments = (article_id, limit, p) => {
-  if (!typeof limit === "number" || !typeof p === "number") {
+  if (!typeof limit === 'number' || !typeof p === 'number') {
     return Promise.reject({
       status: 400,
-      msg: "Query not accepted, please try again",
+      msg: 'Query not accepted, please try again',
     });
   }
-  const queryStr = format(`
+  const queryParams = [article_id];
+
+  let queryStr = format(`
       SELECT *
       FROM comments
       WHERE article_id = $1
       ORDER BY created_at DESC
-      LIMIT $2
-      OFFSET $3
       `);
 
-  return db
-    .query(queryStr, [article_id, limit, p])
-    .then(({ rowCount, rows }) => {
-      if (rowCount === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "This article has no comments yet",
-        });
-      } else {
-        return rows;
-      }
-    });
+  if (limit && p) {
+    queryParams.push(limit, p);
+    queryStr += `
+    LIMIT $2
+    OFFSET $3`;
+  }
+
+  return db.query(queryStr, queryParams).then(({ rowCount, rows }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: 'This article has no comments yet',
+      });
+    } else {
+      return rows;
+    }
+  });
 };
 
 exports.updateArticleVotes = (article_id, votes) => {
