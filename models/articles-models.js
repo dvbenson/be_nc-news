@@ -242,7 +242,10 @@ exports.fetchArticleComments = (article_id, limit, p) => {
     OFFSET $3`;
   }
 
-  return db.query(queryStr, queryParams).then((rows) => {
+  return db.query(queryStr, queryParams).then(({ rowCount, rows }) => {
+    if (rowCount === 0) {
+      return { msg: 'be the first to comment!' };
+    }
     return rows;
   });
 
