@@ -532,7 +532,7 @@ describe('GET: /api/articles/:article_id/comments', () => {
         .get('/api/articles/4/comments')
         .expect(200)
         .then(({ body }) => {
-          expect(body.msg).toBe('be the first to comment!');
+          expect(body[0]).toEqual({ msg: 'be the first to comment!' });
         });
     });
   });
