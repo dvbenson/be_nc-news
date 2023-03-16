@@ -242,16 +242,20 @@ exports.fetchArticleComments = (article_id, limit, p) => {
     OFFSET $3`;
   }
 
-  return db.query(queryStr, queryParams).then(({ rowCount, rows }) => {
-    if (rowCount === 0) {
-      return Promise.reject({
-        status: 404,
-        msg: 'This article has no comments yet',
-      });
-    } else {
-      return rows;
-    }
+  return db.query(queryStr, queryParams).then((rows) => {
+    return rows;
   });
+
+  // .then(({ rowCount, rows }) => {
+  //   if (rowCount === 0) {
+  //     return Promise.reject({
+  //       status: 404,
+  //       msg: 'This article has no comments yet',
+  //     });
+  //   } else {
+  //     return rows;
+  //   }
+  // });
 };
 
 exports.updateArticleVotes = (article_id, votes) => {
