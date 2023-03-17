@@ -162,15 +162,25 @@ exports.removeArticleById = (article_id) => {
       const queryStr = format(`SELECT * FROM articles WHERE article_id = $1;`);
       return db.query(queryStr, [returnedArticleId]);
     })
-    .then(({ rowCount, returnedArticleId }) => {
-      if (rowCount === 0) {
+    .then(({ rows, rowCount }) => {
+      if (rowCount === 0 || rows === []) {
         return Promise.reject({
           status: 404,
           msg: "Article doesn't exist, check the article_id",
         });
       } else {
-        const queryStr = format(`DELETE FROM articles WHERE article_id = $1`);
-        return db.query(queryStr, [returnedArticleId]);
+        const articleIdToDelete = rows[0].article_id;
+        const deleteCommentsQueryStr = format(
+          `DELETE FROM comments WHERE article_id = $1;`
+        );
+        return db
+          .query(deleteCommentsQueryStr, [articleIdToDelete])
+          .then(() => {
+            const deleteArticleQueryStr = format(
+              `DELETE FROM articles WHERE article_id = $1`
+            );
+            return db.query(deleteArticleQueryStr, [articleIdToDelete]);
+          });
       }
     });
 };
@@ -248,17 +258,6 @@ exports.fetchArticleComments = (article_id, limit, p) => {
     }
     return rows;
   });
-
-  // .then(({ rowCount, rows }) => {
-  //   if (rowCount === 0) {
-  //     return Promise.reject({
-  //       status: 404,
-  //       msg: 'This article has no comments yet',
-  //     });
-  //   } else {
-  //     return rows;
-  //   }
-  // });
 };
 
 exports.updateArticleVotes = (article_id, votes) => {

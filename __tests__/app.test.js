@@ -520,15 +520,13 @@ describe('GET: /api/articles/:article_id/comments', () => {
       });
   });
 
-  describe('ERROR: /api/articles/:article_id/comments', () => {
-    test('404: no comments found for article_id', () => {
-      return request(app)
-        .get('/api/articles/8/comments')
-        .expect(200)
-        .then(({ body }) => {
-          expect(body[0].msg).toBe('be the first to comment!');
-        });
-    });
+  test('200: no comments found yet, but comment article exists', () => {
+    return request(app)
+      .get('/api/articles/8/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0].msg).toBe('be the first to comment!');
+      });
   });
 });
 
