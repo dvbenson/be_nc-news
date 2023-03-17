@@ -523,10 +523,10 @@ describe('GET: /api/articles/:article_id/comments', () => {
   describe('ERROR: /api/articles/:article_id/comments', () => {
     test('404: no comments found for article_id', () => {
       return request(app)
-        .get('/api/articles/4/comments')
-        .expect(404)
+        .get('/api/articles/8/comments')
+        .expect(200)
         .then(({ body }) => {
-          expect(body.msg).toBe('This article has no comments yet');
+          expect(body[0].msg).toBe('be the first to comment!');
         });
     });
   });
