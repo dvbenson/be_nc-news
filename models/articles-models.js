@@ -244,21 +244,14 @@ exports.fetchArticleComments = (article_id, limit, p) => {
 
   return db.query(queryStr, queryParams).then(({ rowCount, rows }) => {
     if (rowCount === 0) {
-      return [{ msg: 'be the first to comment!' }];
+      return Promise.reject({
+        status: 404,
+        msg: 'This article has no comments yet',
+      });
+    } else {
+      return rows;
     }
-    return rows;
   });
-
-  // .then(({ rowCount, rows }) => {
-  //   if (rowCount === 0) {
-  //     return Promise.reject({
-  //       status: 404,
-  //       msg: 'This article has no comments yet',
-  //     });
-  //   } else {
-  //     return rows;
-  //   }
-  // });
 };
 
 exports.updateArticleVotes = (article_id, votes) => {

@@ -1,13 +1,13 @@
 const {
   removeCommentById,
   updateCommentVotes,
-} = require("../models/comments-models");
+} = require('../models/comments-models');
 
 exports.deleteCommentById = (request, response, next) => {
   const { comment_id } = request.params;
   removeCommentById(comment_id)
-    .then((result) => {
-      response.status(204).send();
+    .then(() => {
+      response.status(204).send({});
     })
     .catch((error) => {
       next(error);

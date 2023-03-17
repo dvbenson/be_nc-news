@@ -484,12 +484,6 @@ describe('DELETE: /api/articles/:article_id', () => {
 });
 
 describe('GET: /api/articles/:article_id/comments', () => {
-  // test('200: received object message if article has no comments yet', () => {
-  //   return request(app)
-  //   .get('api/articles/2/comments')
-  //   .expect(200)
-  //   .then((response))
-  // })
   test('200: received array of comments for the given article_id', () => {
     return request(app)
       .get('/api/articles/1/comments')
@@ -527,12 +521,12 @@ describe('GET: /api/articles/:article_id/comments', () => {
   });
 
   describe('ERROR: /api/articles/:article_id/comments', () => {
-    test('200: be the first to comment', () => {
+    test('404: no comments found for article_id', () => {
       return request(app)
         .get('/api/articles/4/comments')
-        .expect(200)
+        .expect(404)
         .then(({ body }) => {
-          expect(body[0]).toEqual({ msg: 'be the first to comment!' });
+          expect(body.msg).toBe('This article has no comments yet');
         });
     });
   });

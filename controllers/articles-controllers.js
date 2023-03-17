@@ -6,7 +6,7 @@ const {
   updateArticleVotes,
   addNewArticle,
   removeArticleById,
-} = require("../models/articles-models");
+} = require('../models/articles-models');
 
 exports.getArticles = (request, response, next) => {
   const { sort_by, order, topic, limit, p } = request.query;

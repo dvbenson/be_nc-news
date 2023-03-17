@@ -1,26 +1,27 @@
-const { validateComment, checkVotes } = require("../db/seeds/utils.js");
+const { validateComment, checkVotes } = require('../db/seeds/utils.js');
 
-const db = require("../db/connection.js");
-const format = require("pg-format");
-const query = require("express");
+const db = require('../db/connection.js');
+const format = require('pg-format');
+const query = require('express');
 
 exports.removeCommentById = (comment_id) => {
   return Promise.resolve(validateComment(comment_id))
-    .then((returnedComment_id) => {
+    .then((validCommentId) => {
       const queryStr = format(`SELECT * FROM comments WHERE comment_id = $1;`);
-      return db.query(queryStr, [returnedComment_id]);
+      return db.query(queryStr, [validCommentId]);
     })
-    .then(({ rowCount, returnedComment_id }) => {
-      if (rowCount === 0) {
+    .then(({ rows, rowCount }) => {
+      if (rowCount === 0 || rows === []) {
         return Promise.reject({
           status: 404,
           msg: "Comment doesn't exist, check the comment_id",
         });
       } else {
+        const commentIdToDelete = rows[0].comment_id;
         const queryStr = format(`
         DELETE FROM comments WHERE comment_id = $1;
         `);
-        return db.query(queryStr, [returnedComment_id]);
+        return db.query(queryStr, [commentIdToDelete]);
       }
     });
 };
