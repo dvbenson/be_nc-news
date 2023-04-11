@@ -310,6 +310,6 @@ _The following Node.js packages are required for this project:_
 | :----------------------- | :-------- | :---------------------------------------------------- |
 | <sub>husky</sub>         | `^8.0.2`  | _Validates commit by running tests before committing_ |
 | <sub>jest</sub>          | `^27.5.1` | _Provides framework for testing functionality_        |
-| <sub>jest-extended</sub> | `^2.0.0`  | __Adds additional jest testing identifiers_          |
+| <sub>jest-extended</sub> | `^2.0.0`  | _Adds additional jest testing identifiers_            |
 | <sub>jest-sorted</sub>   | `^1.0.14` | _Adds sort testing for jest_                          |
 | <sub>supertest</sub>     | `^6.3.3`  | _Adds simplified web request testing_                 |
