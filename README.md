@@ -10,14 +10,15 @@
 
 <br>
 
-This JavaScript project uses **_Express.js_** with **_PostgreSQL_** as a database to demonstrate a **RESTful** API. It was created as part of a one-week solo sprint during my time as a student on Northcoders' full-stack Software Development bootcamp, to consolidate knowledge around C.R.U.D functionality.
+#### **Tech:** JavaScript, Express.js, Node.js, PostGresSQL
+
+Forming the backend of a full stack web project, this API provides full CRUD capabilties using Express Router to modularise endpoints and bolster the clean, concise MVC architecture.
 
 Although its original design has been for use with a news website, it has the versatility to be adapted to other projects such as blogs, forums and social media platforms. Within this repository is a demonstration of my proficiency in developing and implementing a user-centred API for content management and creation.
 
-The API will also form the backend of a frontend project built with **_React.js_**. Its functionality covers managing news articles, users and comments. The user is able to
+The API will also form the backend of a frontend project built in **_React_**. Its functionality covers managing news articles, users and comments. The user is able to
 post, update and delete articles and comments - as well as vote/downvote on articles and comments as seen on sites such as Reddit.
 
-Once finishing with the sprint and deploying/hosting the API, I have since refactored and modularised my project for each endpoint as well as utilising react router. These changes reflect my ability to write clean, well-structured code in an MVC pattern.
 
 <br>
 
@@ -152,7 +153,7 @@ https://badsauce-webservices.onrender.com/comments/:comment_id
 https://badsauce-webservices.onrender.com/comments/:comment_id
 ```
 
-## **Hosted Version**
+### **Hosted Version**
 
 ---
 
@@ -162,7 +163,7 @@ Here is a live version of this app, hosted with [Render.](https://badsauce-webse
 
 <br>
 
-## **Setup**
+### **Setup**
 
 ---
 
